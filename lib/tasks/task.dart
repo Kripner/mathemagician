@@ -1,32 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mathemagician/settings.dart';
 
-abstract class Task extends StatefulWidget {
-  // confused? See https://stackoverflow.com/questions/46057353/controlling-state-from-outside-of-a-statefulwidget
-//  static State<StatefulWidget> of<T extends StatefulWidget, S extends State<T>>(BuildContext context) => context.ancestorStateOfType(const TypeMatcher<S>());
+enum TaskStatus { CLEAN, FAILURE, SUCCESS }
 
-  final Settings settings;
+abstract class TaskData {
+  bool answerShowed = false;
+  TaskStatus status = TaskStatus.CLEAN;
 
-//  final double questionFontSize = 50.0;
-
-  Task(this.settings);
-
-  bool checkAnswer(int answer);
+  TaskData.newRandom(Settings settings);
 
   int getAnswer();
 
-  void showAnswer();
+  bool isCorrect(int answer) {
+    return answer == getAnswer();
+  }
 
+  Task createTask();
 }
 
-abstract class TaskState<T extends Task> extends State<T> {
-  bool _showAnswer = false;
+abstract class Task extends StatelessWidget {
+  final TaskData data;
 
-  void showAnswer() {
-    setState(() {
-      _showAnswer = true;
-    });
-  }
+  Task(this.data);
 
   Widget buildQuestion(BuildContext context);
 
@@ -45,8 +40,8 @@ abstract class TaskState<T extends Task> extends State<T> {
           new Flexible(
             child: new Stack(
               children: <Widget>[
-                new Opacity(opacity: _showAnswer ? 1.0 : 0.0, child: new Text(widget.getAnswer().toString())),
-                new Opacity(opacity: _showAnswer ? 0.0 : 1.0, child: new Text('?')),
+                new Opacity(opacity: data.answerShowed ? 1.0 : 0.0, child: new Text(data.getAnswer().toString())),
+                new Opacity(opacity: data.answerShowed ? 0.0 : 1.0, child: new Text('?')),
               ],
             ),
           ),

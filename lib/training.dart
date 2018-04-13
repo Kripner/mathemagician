@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mathemagician/infinite_widget_list.dart';
 import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
+import 'package:mathemagician/tasks/task_data_supplier.dart';
 
 class Training extends StatefulWidget {
   final int tabBarLength = 100;
@@ -22,8 +23,11 @@ class _TrainingState extends State<Training> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _problems =
-        new InfiniteWidgetList(widget.tabBarLength, (index) => new Problem(widget.settings, handleSolved, index));
+    _problems = new InfiniteWidgetList(
+      widget.tabBarLength,
+      (index) => randomTaskData(widget.settings),
+      (data) => new Problem(widget.settings, data, handleSolved),
+    );
     _currentTabController = new TabController(vsync: this, length: widget.tabBarLength);
   }
 
@@ -47,9 +51,7 @@ class _TrainingState extends State<Training> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        actions: <Widget>[
-          new FlatButton(onPressed: _showSettings, child: new Icon(Icons.settings))
-        ],
+        actions: <Widget>[new FlatButton(onPressed: _showSettings, child: new Icon(Icons.settings))],
       ),
       body: new TabBarView(
         controller: _currentTabController,

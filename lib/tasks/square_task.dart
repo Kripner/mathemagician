@@ -5,15 +5,12 @@ import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/tasks/task.dart';
 import 'package:mathemagician/text_with_superscript.dart';
 
-// might cause problems
-SquareTaskState currentState;
+class SquareTaskData extends TaskData {
+  final int number;
 
-class SquareTask extends Task {
-  final int _number;
-
-  SquareTask(Settings settings)
-      : _number = _generateNumber(settings),
-        super(settings);
+  SquareTaskData.newRandom(Settings settings)
+      : number = _generateNumber(settings),
+        super.newRandom(settings);
 
   static int _generateNumber(Settings settings) {
     final int min = pow(10, settings.difficulty.val - 1);
@@ -23,27 +20,21 @@ class SquareTask extends Task {
   }
 
   @override
-  State<StatefulWidget> createState() => currentState = new SquareTaskState();
-
-  @override
-  bool checkAnswer(int answer) {
-    return answer == getAnswer();
-  }
-
-  @override
   int getAnswer() {
-    return pow(_number, 2);
+    return pow(number, 2);
   }
 
   @override
-  void showAnswer() {
-    print('Show Answer 2');
-    currentState.showAnswer();
+  Task createTask() {
+    return new SquareTask(this);
   }
 }
 
-class SquareTaskState extends TaskState<SquareTask> {
+class SquareTask extends Task {
+  SquareTask(SquareTaskData data) : super(data);
+
   Widget buildQuestion(BuildContext context) {
-    return new TextWithSuperscript(widget._number.toString(), '2');
+    SquareTaskData data = super.data as SquareTaskData;
+    return new TextWithSuperscript(data.number.toString(), '2');
   }
 }

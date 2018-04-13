@@ -4,7 +4,7 @@ import 'package:mathemagician/utils.dart';
 class Settings {
   final SettingsIntegerItem difficulty = new SettingsIntegerItem(3, min: 1, max: 6);
   final SettingsItem<Map<String, bool>> selected = new SettingsItem({
-    'squares': true,
+    'squaring': true,
   });
 }
 
