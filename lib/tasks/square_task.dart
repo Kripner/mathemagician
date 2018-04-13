@@ -8,14 +8,19 @@ import 'package:mathemagician/text_with_superscript.dart';
 class SquareTaskData extends TaskData {
   final int number;
 
-  SquareTaskData.newRandom(Settings settings)
-      : number = _generateNumber(settings),
-        super.newRandom(settings);
+  SquareTaskData.random(int numOfDigits)
+      : number = _generateNumber(numOfDigits);
 
-  static int _generateNumber(Settings settings) {
-    final int min = pow(10, settings.difficulty.val - 1);
-    final int max = pow(10, settings.difficulty.val);
+//  static int _generateNumber(Settings settings) {
+//    final int min = pow(10, settings.difficulty.val - 1);
+//    final int max = pow(10, settings.difficulty.val);
+//
+//    return min + new Random().nextInt(max - min + 1);
+//  }
 
+  static int _generateNumber(numOfDigits) {
+    final int min = pow(10, numOfDigits - 1);
+    final int max = pow(10, numOfDigits);
     return min + new Random().nextInt(max - min + 1);
   }
 

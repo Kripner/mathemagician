@@ -3,8 +3,14 @@ import 'package:mathemagician/utils.dart';
 
 class Settings {
   final SettingsIntegerItem difficulty = new SettingsIntegerItem(3, min: 1, max: 6);
+  final SettingsItem<bool> useDifficulty = new SettingsItem(true);
   final SettingsItem<Map<String, bool>> selected = new SettingsItem({
-    'squaring': true,
+    '1-digit-squaring': false,
+    '2-digit-squaring': true,
+    '3-digit-squaring': true,
+    '4-digit-squaring': true,
+    '5-digit-squaring': false,
+    '6-digit-squaring': false,
   });
 }
 

@@ -7,8 +7,6 @@ abstract class TaskData {
   bool answerShowed = false;
   TaskStatus status = TaskStatus.CLEAN;
 
-  TaskData.newRandom(Settings settings);
-
   int getAnswer();
 
   bool isCorrect(int answer) {
