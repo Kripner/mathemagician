@@ -41,6 +41,6 @@ class MultiplicationTask extends Task {
 
   Widget buildQuestion(BuildContext context) {
     MultiplicationTaskData data = super.data as MultiplicationTaskData;
-    return new Text('${data._firstNumber} * ${data._secondNumber}');
+    return new Text('${data._firstNumber} x ${data._secondNumber}');
   }
 }

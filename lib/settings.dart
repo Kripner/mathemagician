@@ -4,7 +4,13 @@ import 'package:mathemagician/utils.dart';
 class Settings {
   final SettingsIntegerItem difficulty = new SettingsIntegerItem(3, min: 1, max: 10);
   final SettingsItem<bool> useDifficulty = new SettingsItem(true);
-  final SettingsItem<Map<String, bool>> selected = new SettingsItem({
+
+  // @formatter:off
+  final SettingsItem<Map<String, bool>> selectedGroups = new SettingsItem({
+    'squaring': true,
+    'multiplication': true,
+  });
+  final SettingsItem<Map<String, bool>> selectedTasks = new SettingsItem({
     '1-digit-squaring': false,
     '2-digit-squaring': true,
     '3-digit-squaring': true,
@@ -24,7 +30,7 @@ class Settings {
     '3x3-multiplication': false,
   });
 }
-
+// @formatter:on
 class SettingsItem<T> {
   T _value;
   final Predicate<T> _validator;
@@ -36,7 +42,7 @@ class SettingsItem<T> {
   }
 
   set val(T newValue) {
-    if (!_validator(newValue)) throw new Exception('Illegal value');
+    if (this._validator != null && !_validator(newValue)) throw new Exception('Illegal value');
     _value = newValue;
   }
 }
