@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/tasks/task.dart';
 
 class MultiplicationTaskData extends TaskData {
@@ -39,8 +39,9 @@ class MultiplicationTaskData extends TaskData {
 class MultiplicationTask extends Task {
   MultiplicationTask(MultiplicationTaskData data) : super(data);
 
-  Widget buildQuestion(BuildContext context) {
+  @override
+  MathExpression buildExpression() {
     MultiplicationTaskData data = super.data as MultiplicationTaskData;
-    return new Text('${data._firstNumber} x ${data._secondNumber}');
+    return new MathExpression('${data._firstNumber} x ${data._secondNumber}');
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/settings.dart';
 
 enum TaskStatus { CLEAN, FAILURE, SUCCESS }
@@ -21,14 +22,21 @@ abstract class Task extends StatelessWidget {
 
   Task(this.data);
 
-  Widget buildQuestion(BuildContext context);
+  MathExpression buildExpression() {
+    return null;
+  }
+
+  Widget buildQuestion(BuildContext context) {
+    MathExpression expression = buildExpression();
+    if (expression == null)
+      throw new Exception('If buildQuestion() is not overriden, buildExpression() musn\'t return null');
+    return expression.createExpression();
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Center(
       child: new Row(
-//        mainAxisAlignment: MainAxisAlignment.center,
-//        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Flexible(

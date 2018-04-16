@@ -1,22 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:mathemagician/settings.dart';
+import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/tasks/task.dart';
-import 'package:mathemagician/text_with_superscript.dart';
 
 class SquareTaskData extends TaskData {
   final int number;
 
-  SquareTaskData.random(int numOfDigits)
-      : number = _generateNumber(numOfDigits);
-
-//  static int _generateNumber(Settings settings) {
-//    final int min = pow(10, settings.difficulty.val - 1);
-//    final int max = pow(10, settings.difficulty.val);
-//
-//    return min + new Random().nextInt(max - min + 1);
-//  }
+  SquareTaskData.random(int numOfDigits) : number = _generateNumber(numOfDigits);
 
   static int _generateNumber(numOfDigits) {
     final int min = pow(10, numOfDigits - 1);
@@ -38,8 +28,9 @@ class SquareTaskData extends TaskData {
 class SquareTask extends Task {
   SquareTask(SquareTaskData data) : super(data);
 
-  Widget buildQuestion(BuildContext context) {
+  @override
+  MathExpression buildExpression() {
     SquareTaskData data = super.data as SquareTaskData;
-    return new TextWithSuperscript(data.number.toString(), '2');
+    return new MathExpression(data.number.toString(), superscript: '2');
   }
 }

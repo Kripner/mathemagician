@@ -23,6 +23,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     Settings settings = widget.settings;
+    bool useDifficulty = settings.useDifficulty.val;
     return new Scaffold(
         appBar: new AppBar(
           actions: <Widget>[
@@ -37,17 +38,19 @@ class _SettingsViewState extends State<SettingsView> {
           child: new Column(
             children: <Widget>[
               new Text('Difficulty'),
-              _buildDifficultySlider(settings),
-              new Divider(color: Colors.grey, height: 50.0,),
+              _buildDifficultySlider(settings, useDifficulty),
+              new Divider(
+                color: Colors.grey,
+                height: 50.0,
+              ),
               _buildDifficultyCheckBox(settings),
-              _buildTasksSelector(settings),
+              _buildTasksSelector(settings, !useDifficulty),
             ],
           ),
         ));
   }
 
-  Widget _buildDifficultySlider(Settings settings) {
-    bool enabled = settings.useDifficulty.val;
+  Widget _buildDifficultySlider(Settings settings, bool enabled) {
     return new Slider(
       label: settings.difficulty.val.toString(),
       value: settings.difficulty.val.toDouble(),
@@ -76,16 +79,16 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  Widget _buildTasksSelector(Settings settings) {
+  Widget _buildTasksSelector(Settings settings, bool enabled) {
     return new ExpansionPanelList(
-      children: tasksGroups.map((TasksGroup g) => _buildTasksGroup(settings, g)).toList(growable: false),
+      children: tasksGroups.map((TasksGroup g) => _buildTasksGroup(settings, g, enabled)).toList(growable: false),
       expansionCallback: (int panelIndex, bool isExpanded) => setState(() {
             _groupsExpanded[tasksGroups[panelIndex]] = !isExpanded;
           }),
     );
   }
 
-  ExpansionPanel _buildTasksGroup(Settings settings, TasksGroup group) {
+  ExpansionPanel _buildTasksGroup(Settings settings, TasksGroup group, bool enabled) {
     return new ExpansionPanel(
       isExpanded: _groupsExpanded[group],
       headerBuilder: (BuildContext context, bool isExpanded) => new Center(
@@ -93,30 +96,34 @@ class _SettingsViewState extends State<SettingsView> {
               children: <Widget>[
                 new Checkbox(
                   value: settings.selectedGroups.val[group.id],
-                  onChanged: (bool value) => setState(() {
-                        settings.selectedGroups.val[group.id] = value;
-                      }),
+                  onChanged: enabled
+                      ? (bool value) => setState(() {
+                            settings.selectedGroups.val[group.id] = value;
+                          })
+                      : null,
                 ),
-                new Text(group.niceName)
+                new Text(group.niceName, style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor))
               ],
             ),
           ),
       body: new Column(
-        children: group.tasks.map((TaskContainer task) => _buildTask(settings, task)).toList(growable: false),
+        children: group.tasks.map((TaskContainer task) => _buildTask(settings, task, enabled)).toList(growable: false),
       ),
     );
   }
 
-  Widget _buildTask(Settings settings, TaskContainer task) {
+  Widget _buildTask(Settings settings, TaskContainer task, bool enabled) {
     return new Row(
       children: <Widget>[
         new Checkbox(
           value: settings.selectedTasks.val[task.id],
-          onChanged: (bool value) => setState(() {
-                settings.selectedTasks.val[task.id] = value;
-              }),
+          onChanged: enabled
+              ? (bool value) => setState(() {
+                    settings.selectedTasks.val[task.id] = value;
+                  })
+              : null,
         ),
-        task.niceName.createExpression(),
+        task.niceName.createExpression(style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
       ],
     );
   }

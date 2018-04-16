@@ -14,7 +14,9 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        primarySwatch: Colors.orange,
+        accentColor: Colors.brown,
       ),
       routes: {
         'settings': (BuildContext context) => new SettingsView(settings),
