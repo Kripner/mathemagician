@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/checkbox_with_label.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 
@@ -90,63 +91,46 @@ class _SettingsViewState extends State<SettingsView> {
   ExpansionPanel _buildTasksGroup(Settings settings, TasksGroup group, bool enabled) {
     return new ExpansionPanel(
       isExpanded: _groupsExpanded[group],
-      headerBuilder: (BuildContext context, bool isExpanded) => new Center(
-            child: new Row(
-              children: <Widget>[
-                new Checkbox(
-                  value: settings.selectedGroups.val[group.id],
-                  onChanged: enabled
-                      ? (bool value) => setState(() {
-                            settings.selectedGroups.val[group.id] = value;
-                          })
-                      : null,
-                ),
-                new Expanded(
-                    child: new Text(group.niceName,
-                        style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor))),
-              ],
-            ),
+      headerBuilder: (BuildContext context, bool isExpanded) => new CheckboxWithLabel(
+            value: settings.selectedGroups.val[group.id],
+            onChanged: enabled
+                ? (bool value) => setState(() {
+                      settings.selectedGroups.val[group.id] = value;
+                    })
+                : null,
+            label:
+                new Text(group.niceName, style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
           ),
       body: new Column(
-        children: group.tasks.map((TaskContainer task) => _buildTask(settings, task, enabled)).toList(growable: false),
+        children: group.tasks
+            .map((TaskContainer task) => _buildTaskCheckbox(settings, task, enabled))
+            .toList(growable: false),
       ),
     );
   }
 
-  Widget _buildTask(Settings settings, TaskContainer task, bool enabled) {
-    return new Row(
-      children: <Widget>[
-        new Checkbox(
-          value: settings.selectedTasks.val[task.id],
-          onChanged: enabled
-              ? (bool value) => setState(() {
-                    settings.selectedTasks.val[task.id] = value;
-                  })
-              : null,
-        ),
-        new Expanded(
-          child: task.niceName
-              .createExpression(style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
-        ),
-      ],
+  Widget _buildTaskCheckbox(Settings settings, TaskContainer task, bool enabled) {
+    return new CheckboxWithLabel(
+      value: settings.selectedTasks.val[task.id],
+      onChanged: enabled
+          ? (bool value) => setState(() {
+                settings.selectedTasks.val[task.id] = value;
+              })
+          : null,
+      label:
+          task.niceName.createExpression(style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
     );
   }
 
   Widget _buildJumpAfterSolvedCheckbox(Settings settings) {
-    return new Row(
-      children: <Widget>[
-        new Checkbox(
-          value: settings.jumpAfterSolve.val,
-          onChanged: (bool value) {
-            setState(() {
-              settings.jumpAfterSolve.val = value;
-            });
-          },
-        ),
-        new Expanded(
-          child: new Text('Jump to next problem after solving the previous?'),
-        ),
-      ],
+    return new CheckboxWithLabel(
+      value: settings.jumpAfterSolve.val,
+      onChanged: (bool value) {
+        setState(() {
+          settings.jumpAfterSolve.val = value;
+        });
+      },
+      label: new Text('Jump to next problem after solving the previous?'),
     );
   }
 }

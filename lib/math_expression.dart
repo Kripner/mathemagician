@@ -21,7 +21,7 @@ class TextWithSuperscript extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         new Text(_baseText),
