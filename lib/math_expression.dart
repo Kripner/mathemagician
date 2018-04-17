@@ -8,15 +8,15 @@ class MathExpression {
 
   Widget createExpression({TextStyle style}) {
     if (superscript == null) return new Text(text, style: style);
-    return new TextWithSuperscript(text, superscript);
+    return new TextWithSuperscript(this, style: style);
   }
 }
 
 class TextWithSuperscript extends StatelessWidget {
-  final String _baseText;
-  final String _superscript;
+  final MathExpression expression;
+  final TextStyle style;
 
-  TextWithSuperscript(this._baseText, this._superscript);
+  TextWithSuperscript(this.expression, {this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +24,12 @@ class TextWithSuperscript extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        new Text(_baseText),
-        new Text(_superscript, style: new TextStyle(fontSize: 10.0)),
+        new Text(
+          expression.text,
+          style: style,
+        ),
+        new Text(expression.superscript,
+            style: style == null ? new TextStyle(fontSize: 10.0) : style.copyWith(fontSize: 10.0)),
       ],
     );
   }

@@ -35,7 +35,7 @@ class _SettingsViewState extends State<SettingsView> {
           ],
         ),
         body: new SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 30.0),
+          padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
           child: new Column(
             children: <Widget>[
               new Text('Difficulty'),
