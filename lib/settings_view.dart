@@ -39,12 +39,11 @@ class _SettingsViewState extends State<SettingsView> {
             children: <Widget>[
               new Text('Difficulty'),
               _buildDifficultySlider(settings, useDifficulty),
-              new Divider(
-                color: Colors.grey,
-                height: 50.0,
-              ),
+              new Divider(color: Colors.grey, height: 50.0),
               _buildDifficultyCheckBox(settings),
               _buildTasksSelector(settings, !useDifficulty),
+              new Divider(color: Colors.grey, height: 50.0),
+              _buildJumpAfterSolvedCheckbox(settings),
             ],
           ),
         ));
@@ -102,7 +101,9 @@ class _SettingsViewState extends State<SettingsView> {
                           })
                       : null,
                 ),
-                new Text(group.niceName, style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor))
+                new Expanded(
+                    child: new Text(group.niceName,
+                        style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor))),
               ],
             ),
           ),
@@ -123,7 +124,28 @@ class _SettingsViewState extends State<SettingsView> {
                   })
               : null,
         ),
-        task.niceName.createExpression(style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
+        new Expanded(
+          child: task.niceName
+              .createExpression(style: enabled ? null : new TextStyle(color: Theme.of(context).disabledColor)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildJumpAfterSolvedCheckbox(Settings settings) {
+    return new Row(
+      children: <Widget>[
+        new Checkbox(
+          value: settings.jumpAfterSolve.val,
+          onChanged: (bool value) {
+            setState(() {
+              settings.jumpAfterSolve.val = value;
+            });
+          },
+        ),
+        new Expanded(
+          child: new Text('Jump to next problem after solving the previous?'),
+        ),
       ],
     );
   }

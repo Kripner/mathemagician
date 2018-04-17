@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 typedef D WidgetDataBuilder<D>(int index);
-typedef T ListWidgetBuilder<T extends Widget, D>(D data);
+typedef T ListWidgetBuilder<T extends Widget, D>(int index, D data);
 
 class InfiniteWidgetList<T extends Widget> extends ListBase<T> {
   final WidgetDataBuilder _dataBuilder;
@@ -26,7 +26,7 @@ class InfiniteWidgetList<T extends Widget> extends ListBase<T> {
     if (index == _realLength)
       _data.add(_dataBuilder(_realLength));
 
-    return _widgetBuilder(_data[index]);
+    return _widgetBuilder(index, _data[index]);
   }
 
   @override

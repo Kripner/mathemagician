@@ -13,8 +13,9 @@ class Problem extends StatefulWidget {
   final Settings _settings;
   final Consumer<int> _onSolve;
   final TaskData _taskData;
+  final int _index;
 
-  Problem(this._settings, this._taskData, this._onSolve);
+  Problem(this._settings, this._taskData, this._onSolve, this._index);
 
   @override
   _ProblemState createState() => new _ProblemState();
@@ -49,11 +50,11 @@ class _ProblemState extends State<Problem> {
     if (isCorrect) {
       setSuccessInfo();
       print('Correct!');
+      widget._onSolve(widget._index);
     } else {
       setFailureInfo();
       print('Incorrect');
     }
-//    widget.onSolve(widget.index);
   }
 
   @override

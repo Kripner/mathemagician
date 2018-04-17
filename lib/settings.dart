@@ -29,8 +29,11 @@ class Settings {
     '2x3-multiplication': false,
     '3x3-multiplication': false,
   });
+  // @formatter:on
+
+  final SettingsItem<bool> jumpAfterSolve = new SettingsItem(true);
 }
-// @formatter:on
+
 class SettingsItem<T> {
   T _value;
   final Predicate<T> _validator;

@@ -26,14 +26,18 @@ class _TrainingState extends State<Training> with SingleTickerProviderStateMixin
     _problems = new InfiniteWidgetList(
       widget.tabBarLength,
       (index) => randomTaskData(widget.settings),
-      (data) => new Problem(widget.settings, data, handleSolved),
+      (index, data) => new Problem(widget.settings, data, handleSolved, index),
     );
     _currentTabController = new TabController(vsync: this, length: widget.tabBarLength);
   }
 
   void handleSolved(int index) {
     print('Animating to ${index + 1}');
-    _currentTabController.animateTo(index + 1);
+    if (widget.settings.jumpAfterSolve.val) {
+      new Future.delayed(new Duration(seconds: 1), () {
+        _currentTabController.animateTo(index + 1);
+      });
+    }
   }
 
   @override
@@ -43,8 +47,7 @@ class _TrainingState extends State<Training> with SingleTickerProviderStateMixin
   }
 
   void _showSettings() async {
-    var val = await Navigator.pushNamed(context, 'settings');
-    print(val);
+    await Navigator.pushNamed(context, 'settings');
   }
 
   @override
