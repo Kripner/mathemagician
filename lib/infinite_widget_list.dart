@@ -13,7 +13,7 @@ class InfiniteWidgetList<T extends Widget> extends ListBase<T> {
   @override
   int length;
 
-  get _realLength => _data.length;
+  get realLength => _data.length;
 
   InfiniteWidgetList(this.length, this._dataBuilder, this._widgetBuilder) : _data = [_dataBuilder(0)];
 
@@ -21,10 +21,10 @@ class InfiniteWidgetList<T extends Widget> extends ListBase<T> {
   T operator [](int index) {
     print('Widget number $index requested');
 
-    if (index > _realLength)
+    if (index > realLength)
       throw new Exception('Index too large - querying for other than the next widget is not supported');
-    if (index == _realLength)
-      _data.add(_dataBuilder(_realLength));
+    if (index == realLength)
+      _data.add(_dataBuilder(realLength));
 
     return _widgetBuilder(index, _data[index]);
   }
