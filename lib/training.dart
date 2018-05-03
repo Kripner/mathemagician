@@ -8,7 +8,9 @@ import 'package:mathemagician/tasks/task.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 
 class Training extends StatefulWidget {
-  final int tabBarLength = 1000;
+  static const int TAB_BAR_LENGTH = 1000;
+  static const int PROBLEMS_BATCH_SIZE = 5;
+
   final Settings settings;
 
   Training(this.settings);
@@ -21,27 +23,56 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   InfiniteWidgetList<Problem> _problems;
   TabController _currentTabController;
   AnimationController _forwardArrowAnimation;
+  int _solvedProblems;
+  AnimationController _progressAnimation;
 
   @override
   void initState() {
     super.initState();
     _problems = new InfiniteWidgetList(
-      widget.tabBarLength,
+      Training.TAB_BAR_LENGTH,
       (index) => randomTaskData(widget.settings),
       (index, data) => new Problem(widget.settings, data, handleSolved, index),
     );
-    _currentTabController = new TabController(vsync: this, length: widget.tabBarLength);
+    _currentTabController = new TabController(vsync: this, length: Training.TAB_BAR_LENGTH);
     _forwardArrowAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 750));
+    _progressAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 500));
+    _progressAnimation.addListener(() {
+      setState(() {});
+    });
+//    _progressAnimation.addStatusListener((status) {
+//      print(status.toString());
+//    });
+    _solvedProblems = 0;
   }
 
   void handleSolved(int index) {
     print('Animating to ${index + 1}');
+    _handleProgress();
     if (widget.settings.jumpAfterSolve.val) {
       new Future.delayed(new Duration(seconds: 1), () {
         _currentTabController.animateTo(index + 1);
 //        _checkForwardArrow();
       });
     }
+  }
+
+  void _handleProgress() {
+    ++_solvedProblems;
+    double progressValue = (_solvedProblems % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+    print(progressValue);
+    _progressAnimation.animateTo(progressValue).then((_) {
+      if (progressValue == 1) {
+        setState(() {
+          widget.settings.batchesSolved.val++;
+        });
+        new Future.delayed(const Duration(milliseconds: 1000), () {
+          setState(() {
+            _progressAnimation.value = 0.0;
+          });
+        });
+      }
+    });
   }
 
   void _checkForwardArrow() {
@@ -55,6 +86,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   @override
   void dispose() {
     _forwardArrowAnimation.dispose();
+    _progressAnimation.dispose();
     _currentTabController.dispose();
     super.dispose();
   }
@@ -74,25 +106,32 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
       appBar: new AppBar(
         actions: <Widget>[new FlatButton(onPressed: _showSettings, child: new Icon(Icons.settings))],
       ),
-      body: new Stack(
+      body: new Column(
         children: <Widget>[
-          new TabBarView(
-            controller: _currentTabController,
-            children: _problems,
-          ),
-          new Positioned(
-            right: 7.0,
-            bottom: (MediaQuery.of(context).size.height - iconSize) / 2,
-            child: new FadeTransition(
-              opacity: _forwardArrowAnimation,
-              child: new IconButton(
-                iconSize: iconSize,
-                color: Colors.grey,
-                icon: new Icon(Icons.keyboard_arrow_right),
-                onPressed: () {
-                  _currentTabController.animateTo(_problems.realLength);
-                },
-              ),
+          _buildProgressMeter(),
+          new Expanded(
+            child: new Stack(
+              children: <Widget>[
+                new TabBarView(
+                  controller: _currentTabController,
+                  children: _problems,
+                ),
+                new Positioned(
+                  right: 7.0,
+                  bottom: (MediaQuery.of(context).size.height - iconSize) / 2,
+                  child: new FadeTransition(
+                    opacity: _forwardArrowAnimation,
+                    child: new IconButton(
+                      iconSize: iconSize,
+                      color: Colors.grey,
+                      icon: new Icon(Icons.keyboard_arrow_right),
+                      onPressed: () {
+                        _currentTabController.animateTo(_problems.realLength);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -100,37 +139,24 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     );
   }
 
-//  @override
-//  Widget build(BuildContext context) {
-//    Widget problemsView = new TabBarView(
-//      controller: _currentTabController,
-//      children: _problems,
-//    );
-//    if (_currentTabController.index < _problems.realLength - 1) {
-//      print('ahaa');
-//      problemsView = new Stack(
-//        children: <Widget>[
-//          new IconButton(
-//            icon: new Icon(Icons.arrow_forward),
-//            onPressed: () => _currentTabController.animateTo(_problems.realLength),
-//          ),
-//          problemsView,
-//        ],
-//      );
-//    }
-//    _currentTabController.addListener(() {
-//      print('listener');
-//      // TODO: might register more (redundant) listeners
-//      if (_currentTabController.indexIsChanging) {
-//        setState(() {});
-//        print('changing');
-//      }
-//    });
-//    return new Scaffold(
-//      appBar: new AppBar(
-//        actions: <Widget>[new FlatButton(onPressed: _showSettings, child: new Icon(Icons.settings))],
-//      ),
-//      body: problemsView,
-//    );
-//  }
+  Widget _buildProgressMeter() {
+    return new Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          new Flexible(
+            child: new LinearProgressIndicator(
+              value: _progressAnimation.value,
+            ),
+          ),
+          new Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: new Text(String.fromCharCode(0x1F308)), // rainbow 🌈
+          ),
+          new Text(widget.settings.batchesSolved.val.toString().padLeft(6)),
+        ],
+      ),
+    );
+  }
 }

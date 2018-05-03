@@ -2,6 +2,7 @@ import 'package:mathemagician/tasks/square_task.dart';
 import 'package:mathemagician/utils.dart';
 
 class Settings {
+  // VISIBLE SETTINGS
   final SettingsIntegerItem difficulty = new SettingsIntegerItem(3, min: 1, max: 10);
   final SettingsItem<bool> useDifficulty = new SettingsItem(true);
 
@@ -32,6 +33,9 @@ class Settings {
   // @formatter:on
 
   final SettingsItem<bool> jumpAfterSolve = new SettingsItem(true);
+
+  // INVISIBLE SETTINGS
+  final SettingsIntegerItem batchesSolved = new SettingsIntegerItem(10000);
 }
 
 class SettingsItem<T> {
@@ -57,5 +61,5 @@ class SettingsIntegerItem extends SettingsItem<int> {
   SettingsIntegerItem(int value, {int min, int max})
       : this.min = min,
         this.max = max,
-        super(value, (d) => d >= min && d <= max);
+        super(value, min == null || max == null ? null : (d) => d >= min && d <= max);
 }
