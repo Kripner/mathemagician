@@ -7,7 +7,7 @@ import 'package:mathemagician/training.dart';
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
-  final Settings settings = new Settings();
+  final Settings settings = new Settings.defaultValues();
 
   @override
   Widget build(BuildContext context) {

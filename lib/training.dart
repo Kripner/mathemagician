@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mathemagician/infinite_widget_list.dart';
 import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
+import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/tasks/task.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 
