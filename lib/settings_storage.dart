@@ -5,7 +5,6 @@ import 'dart:convert' as JSON;
 import 'package:mathemagician/settings.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 class SettingsStorage {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -34,7 +33,7 @@ class SettingsStorage {
       Settings settings = new Settings.fromMap(parsed);
       return settings;
     } catch (e) {
-      return null;
+      rethrow;
     }
   }
 }

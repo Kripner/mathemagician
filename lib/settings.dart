@@ -47,12 +47,12 @@ class Settings {
         batchesSolved = new SettingsIntegerItem(0);
 
   Settings.fromMap(Map<String, dynamic> map)
-      : difficulty = map['difficulty'],
-        useDifficulty = map['useDifficulty'],
-        selectedGroups = map['selectedGroups'],
-        selectedTasks = map['selectedTasks'],
-        jumpAfterSolve = map['jumpAfterSolve'],
-        batchesSolved = map['batchesSolved'];
+      : difficulty = new SettingsIntegerItem(map['difficulty']),
+        useDifficulty = new SettingsItem(map['useDifficulty']),
+        selectedGroups = new SettingsItem(_castInternalMap(map['selectedGroups'])),
+        selectedTasks = new SettingsItem(_castInternalMap(map['selectedTasks'])),
+        jumpAfterSolve = new SettingsItem(map['jumpAfterSolve']),
+        batchesSolved = new SettingsIntegerItem(map['batchesSolved']);
 
 
   Map<String, dynamic> toMap() {
@@ -65,6 +65,10 @@ class Settings {
 
       'batchesSolved': batchesSolved.val,
     };
+  }
+
+  static Map<K, V> _castInternalMap<K, V>(var internalMap) {
+    return new Map<K, V>.from(internalMap as Map<K, dynamic>);
   }
 }
 

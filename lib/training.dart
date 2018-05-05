@@ -41,9 +41,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     _progressAnimation.addListener(() {
       setState(() {});
     });
-//    _progressAnimation.addStatusListener((status) {
-//      print(status.toString());
-//    });
     _solvedProblems = 0;
   }
 

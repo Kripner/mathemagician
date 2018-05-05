@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/home.dart';
 import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_view.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'settings': (BuildContext context) => new SettingsView(settings),
       },
-      home: new Training(settings),
+      home: new Home(),
     );
   }
 }
