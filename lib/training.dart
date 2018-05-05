@@ -5,6 +5,7 @@ import 'package:mathemagician/infinite_widget_list.dart';
 import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
+import 'package:mathemagician/settings_view.dart';
 import 'package:mathemagician/tasks/task.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 
@@ -90,7 +91,10 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   }
 
   void _showSettings() async {
-    await Navigator.pushNamed(context, 'settings');
+    await Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new SettingsView(widget.settings)),
+    );
   }
 
   @override

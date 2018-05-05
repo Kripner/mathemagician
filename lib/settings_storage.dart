@@ -19,7 +19,7 @@ class SettingsStorage {
   Future<File> save(Settings settings) async {
     final file = await _settingsFile;
     String json = JSON.jsonEncode(settings.toMap());
-    print(json);
+    print('saved');
     return file.writeAsString('$json');
   }
 
@@ -27,10 +27,8 @@ class SettingsStorage {
     try {
       final file = await _settingsFile;
       String json = await file.readAsString();
-      print(json);
       Map<String, dynamic> parsed = JSON.jsonDecode(json);
-      print(parsed);
-      Settings settings = new Settings.fromMap(parsed);
+      Settings settings = new Settings.fromMap(parsed, storage: this);
       return settings;
     } catch (e) {
       rethrow;

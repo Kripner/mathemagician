@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
     widget._settingsStorage.load().catchError((e) {
       print('Couldn\'t load settings: ' + e);
       setState(() {
-        _settings = new Settings.defaultValues();
+        _settings = new Settings.defaultValues(storage: widget._settingsStorage);
       });
     }).then((Settings loadedSettings) {
       print('Settings loaded successfully');

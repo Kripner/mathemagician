@@ -19,9 +19,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
         accentColor: Colors.brown,
       ),
-      routes: {
-        'settings': (BuildContext context) => new SettingsView(settings),
-      },
       home: new Home(),
     );
   }
