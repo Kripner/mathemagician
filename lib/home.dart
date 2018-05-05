@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
+import 'package:mathemagician/training.dart';
 import 'package:mathemagician/utils.dart';
 
 class Home extends StatefulWidget {
@@ -16,7 +17,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    widget._settingsStorage.load().then((Settings loadedSettings) {
+    widget._settingsStorage.load().catchError((e) {
+      print('Couldn\'t load settings: ' + e);
+      setState(() {
+        _settings = new Settings.defaultValues();
+      });
+    }).then((Settings loadedSettings) {
+      print('Settings loaded successfully');
       setState(() {
         _settings = loadedSettings;
       });
@@ -53,5 +60,9 @@ class _HomeState extends State<Home> {
       showTextSnackBar(context, 'Please wait until your settings are loaded');
       return;
     }
+    Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new Training(_settings)),
+    );
   }
 }
