@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// currently redundant
 class MathExpression {
   final String text;
   final String superscript;

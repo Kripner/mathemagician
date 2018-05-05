@@ -31,6 +31,6 @@ class SquareTask extends Task {
   @override
   MathExpression buildExpression() {
     SquareTaskData data = super.data as SquareTaskData;
-    return new MathExpression(data.number.toString(), superscript: '2');
+    return new MathExpression(data.number.toString() + '\u00B2');
   }
 }
