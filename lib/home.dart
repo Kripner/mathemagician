@@ -17,15 +17,15 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    widget._settingsStorage.load().catchError((e) {
-      print('Couldn\'t load settings: ' + e);
-      setState(() {
-        _settings = new Settings.defaultValues(storage: widget._settingsStorage);
-      });
-    }).then((Settings loadedSettings) {
+    widget._settingsStorage.load().then((Settings loadedSettings) {
       print('Settings loaded successfully');
       setState(() {
         _settings = loadedSettings;
+      });
+    }, onError: (e) {
+      print('Loading settings failed: ' + e.toString());
+      setState(() {
+        _settings = new Settings.defaultValues(storage: widget._settingsStorage);
       });
     });
   }
@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
     return new Column(
       children: <Widget>[
         new Text('You have earned'),
-        _settings == null ? new CircularProgressIndicator() : new Text(_settings.batchesSolved.val.toString()),
+        _settings == null ? new CircularProgressIndicator() : new Text(_settings.rainbows.val.toString()),
         new Text('rainbows so far!'),
       ],
     );

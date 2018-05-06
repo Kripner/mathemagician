@@ -25,7 +25,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   InfiniteWidgetList<Problem> _problems;
   TabController _currentTabController;
   AnimationController _forwardArrowAnimation;
-  int _solvedProblems;
   AnimationController _progressAnimation;
 
   @override
@@ -42,7 +41,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     _progressAnimation.addListener(() {
       setState(() {});
     });
-    _solvedProblems = 0;
   }
 
   void handleSolved(int index) {
@@ -57,13 +55,13 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   }
 
   void _handleProgress() {
-    ++_solvedProblems;
-    double progressValue = (_solvedProblems % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+    widget.settings.problemsSolved.val++;
+    double progressValue = (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
     print(progressValue);
     _progressAnimation.animateTo(progressValue).then((_) {
       if (progressValue == 1) {
         setState(() {
-          widget.settings.batchesSolved.val++;
+          widget.settings.rainbows.val++;
         });
         new Future.delayed(const Duration(milliseconds: 1000), () {
           setState(() {
@@ -156,7 +154,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: new Text(String.fromCharCode(0x1F308)), // rainbow 🌈
           ),
-          new Text(widget.settings.batchesSolved.val.toString().padLeft(6)),
+          new Text(widget.settings.rainbows.val.toString().padLeft(6)),
         ],
       ),
     );

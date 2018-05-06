@@ -1,7 +1,15 @@
+import 'package:mathemagician/settings_migrations/0to1.dart';
+import 'package:mathemagician/settings_migrations/settings_migration.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/utils.dart';
 
 class Settings {
+  static const int SERIAL_VERSION_ID = 1;
+
+  static const Map<int, SettingsMigration> MIGRATIONS = {
+    0: const Migration0to1(),
+  };
+
   // VISIBLE SETTINGS
   final SettingsIntegerItem difficulty;
   final SettingsItem<bool> useDifficulty;
@@ -12,7 +20,9 @@ class Settings {
   final SettingsItem<bool> jumpAfterSolve;
 
   // INVISIBLE SETTINGS
-  final SettingsIntegerItem batchesSolved;
+  // this redundancy will be convenient later (maybe)
+  final SettingsIntegerItem rainbows;
+  final SettingsIntegerItem problemsSolved;
 
   // DEFAULT
   // @formatter:off
@@ -43,7 +53,8 @@ class Settings {
       '3x3-multiplication': false,
     },
     'jumpAfterSolve': true,
-    'batchesSolved': 0,
+    'rainbows': 0,
+    'problemsSolved': 0,
   };
   // @formatter:on
 
@@ -59,10 +70,11 @@ class Settings {
         selectedGroups = new SettingsItem(_castInternalMap(map['selectedGroups'])),
         selectedTasks = new SettingsItem(_castInternalMap(map['selectedTasks'])),
         jumpAfterSolve = new SettingsItem(map['jumpAfterSolve']),
-        batchesSolved = new SettingsIntegerItem(map['batchesSolved']) {
+        rainbows = new SettingsIntegerItem(map['rainbows']),
+        problemsSolved = new SettingsIntegerItem(map['problemsSolved']) {
     // _onChanged method not available in the initialization list
     difficulty.onChanged = useDifficulty.onChanged = selectedGroups.onChanged = selectedTasks.onChanged =
-        jumpAfterSolve.onChanged = batchesSolved.onChanged = _onChanged;
+        jumpAfterSolve.onChanged = rainbows.onChanged = problemsSolved.onChanged = _onChanged;
   }
 
 
@@ -74,12 +86,15 @@ class Settings {
       'selectedTasks': selectedTasks.val,
       'jumpAfterSolve': jumpAfterSolve.val,
 
-      'batchesSolved': batchesSolved.val,
+      'rainbows': rainbows.val,
+      'problemsSolved': problemsSolved.val,
     };
   }
 
   void _onChanged() {
-    storage?.save(this);
+    storage?.save(this)?.catchError((e) {
+      print('Saving settings failed: ' + e.toString());
+    });
   }
 
   static Map<K, V> _castInternalMap<K, V>(var internalMap) {
