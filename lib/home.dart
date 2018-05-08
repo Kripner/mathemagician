@@ -33,6 +33,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return new Scaffold(
       body: new CustomPaint(
         painter: new MathNet(const EdgeInsets.symmetric(vertical: 0.3, horizontal: 0.25)),
@@ -40,7 +41,12 @@ class _HomeState extends State<Home> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new OutlineButton(onPressed: startTraining, child: new Text('Train!')),
+              new Text('Mathemagics!', style: theme.textTheme.title),
+              new Text('The art of mental math'),
+              new Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: new OutlineButton(onPressed: startTraining, child: new Text('Train!')),
+              ),
               _buildStats(),
             ],
           ),
@@ -50,13 +56,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildStats() {
-    return new Column(
-      children: <Widget>[
-        new Text('You have earned'),
-        _settings == null ? new CircularProgressIndicator() : new Text(_settings.rainbows.val.toString()),
-        new Text('rainbows so far!'),
-      ],
-    );
+    if (_settings == null) return new Container();
+    return new Text(_settings.rainbows.val.toString() + ' ' + rainbow);
   }
 
   void startTraining() {

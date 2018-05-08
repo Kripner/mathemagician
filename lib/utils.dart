@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 typedef bool Predicate<T>(T value);
 
+final String rainbow = String.fromCharCode(0x1F308); // rainbow 🌈
+
 O doNothing<I, O>(I importantValueToBeProcessedCarefully) {
   return null; // so lazy
 }

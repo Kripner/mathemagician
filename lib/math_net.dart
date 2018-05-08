@@ -17,6 +17,9 @@ class MathNet extends CustomPainter {
   static const int LINES_COLOR = 0xFF4A6A73;
   static const int TEXT_COLOR = 0xFF02556C;
 
+  static const List<String> SYMBOLS = ['+', '='];
+  static const double SYMBOL_PROB = 0.3;
+
   MathNet(this._areaToPaint)
       // must provide ratios
       : assert(_areaToPaint.top < 1 && _areaToPaint.right < 1 && _areaToPaint.bottom < 1 && _areaToPaint.left < 1);
@@ -35,11 +38,17 @@ class MathNet extends CustomPainter {
         double x = randomLikeNormal(_random, meanX, NODE_DIST_VARIANCE);
         double y = randomLikeNormal(_random, meanY, NODE_DIST_VARIANCE);
         Point position = new Point(x, y);
-        Node newNode = reservedCenter.containsPoint(position) ? null : new Node(new Point(x, y), 'M');
+        Node newNode = reservedCenter.containsPoint(position) ? null : new Node(new Point(x, y), _randomNode());
         nodes[row].add(newNode);
       }
     }
     return nodes;
+  }
+
+  String _randomNode() {
+    if (_random.nextDouble() < SYMBOL_PROB)
+      return SYMBOLS[_random.nextInt(SYMBOLS.length)];
+    return _random.nextInt(100).toString();
   }
 
   @override

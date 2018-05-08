@@ -8,6 +8,7 @@ import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/settings_view.dart';
 import 'package:mathemagician/tasks/task.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
+import 'package:mathemagician/utils.dart';
 
 class Training extends StatefulWidget {
   static const int TAB_BAR_LENGTH = 1000;
@@ -152,7 +153,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
           ),
           new Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
-            child: new Text(String.fromCharCode(0x1F308)), // rainbow 🌈
+            child: new Text(rainbow),
           ),
           new Text(widget.settings.rainbows.val.toString().padLeft(6)),
         ],
