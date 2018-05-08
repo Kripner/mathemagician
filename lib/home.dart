@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/math_net.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/training.dart';
@@ -33,13 +34,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new FlatButton(onPressed: startTraining, child: new Text('Train!')),
-            _buildStats(),
-          ],
+      body: new CustomPaint(
+        painter: new MathNet(const EdgeInsets.symmetric(vertical: 0.3, horizontal: 0.25)),
+        child: new Center(
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new OutlineButton(onPressed: startTraining, child: new Text('Train!')),
+              _buildStats(),
+            ],
+          ),
         ),
       ),
     );
