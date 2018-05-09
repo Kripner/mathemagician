@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 import 'package:mathemagician/utils.dart';
-import 'package:mathemagician/tasks/task.dart';
+import 'package:mathemagician/tasks/task_data.dart';
 
 class Problem extends StatefulWidget {
   final String failureMessage = 'Not quite right';
@@ -23,24 +23,28 @@ class Problem extends StatefulWidget {
 
 class _ProblemState extends State<Problem> {
   FocusNode _inputFocusNode;
-
+  TextEditingController _inputController;
 
   @override
   void initState() {
     super.initState();
+    print(widget._taskData.userInput);
+    _inputController = new TextEditingController(text: widget._taskData.userInput);
     _inputFocusNode = new FocusNode();
   }
-
 
   @override
   void dispose() {
     _inputFocusNode.dispose();
+    _inputController.dispose();
     super.dispose();
   }
 
   void _showAnswer() {
     setState(() {
-      widget._taskData.answerShowed = true;
+      _inputFocusNode.unfocus();
+      widget._taskData.answerShown = true;
+      widget._taskData.status = TaskStatus.SHOWED_ANSWER;
     });
   }
 
@@ -52,7 +56,15 @@ class _ProblemState extends State<Problem> {
 
   void _setSuccessInfo() {
     setState(() {
+      _inputFocusNode.unfocus();
+      widget._taskData.answerShown = true;
       widget._taskData.status = TaskStatus.SUCCESS;
+    });
+  }
+
+  void _resetInfo() {
+    setState(() {
+      widget._taskData.status = TaskStatus.CLEAN;
     });
   }
 
@@ -63,7 +75,6 @@ class _ProblemState extends State<Problem> {
 
     if (isCorrect) {
       _setSuccessInfo();
-      _showAnswer();
       print('Correct!');
       widget._onSolve(widget._index);
     } else {
@@ -74,7 +85,7 @@ class _ProblemState extends State<Problem> {
 
   @override
   Widget build(BuildContext context) {
-    FocusScope.of(context).requestFocus(_inputFocusNode);
+    if (widget._taskData.status == TaskStatus.CLEAN) FocusScope.of(context).requestFocus(_inputFocusNode);
     TextTheme textTheme = Theme.of(context).textTheme;
     TextStyle taskStyle = textTheme.headline;
 
@@ -83,40 +94,46 @@ class _ProblemState extends State<Problem> {
       child: new Column(
         children: <Widget>[
           new Flexible(
-              child: new Center(
-            child: new Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                new Flexible(
-                  child: widget._taskData.buildExpression().createExpression(style: taskStyle),
-                ),
-                new Padding(
-                  padding: new EdgeInsets.symmetric(horizontal: 5.0),
-                  child: new Text('=', style: taskStyle),
-                ),
-                new Flexible(
-                  child: new Stack(
-                    children: <Widget>[
-                      new Opacity(
-                          opacity: widget._taskData.answerShowed ? 1.0 : 0.0,
-                          child: new Text(widget._taskData.getAnswer().toString(), style: taskStyle)),
-                      new Opacity(
-                        opacity: widget._taskData.answerShowed ? 0.0 : 1.0,
-                        child: new TextField(
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          onSubmitted: _numberSubmitted,
-//                          autofocus: true,
-                          style: taskStyle,
-                          focusNode: _inputFocusNode,
-                        ),
-                      ),
-                    ],
+            child: new Center(
+              child: new Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  new Flexible(
+                    child: widget._taskData.buildExpression().createExpression(style: taskStyle),
                   ),
-                ),
-              ],
+                  new Padding(
+                    padding: new EdgeInsets.symmetric(horizontal: 5.0),
+                    child: new Text('=', style: taskStyle),
+                  ),
+                  new Flexible(
+                    child: new Stack(
+                      alignment: AlignmentDirectional.centerStart,
+                      children: <Widget>[
+                        new Opacity(
+                            opacity: widget._taskData.answerShown ? 1.0 : 0.0,
+                            child: new Text(widget._taskData.getAnswer().toString(), style: taskStyle)),
+                        new Opacity(
+                          opacity: widget._taskData.answerShown ? 0.0 : 1.0,
+                          child: new TextField(
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            onSubmitted: _numberSubmitted,
+                            style: taskStyle,
+                            focusNode: _inputFocusNode,
+                            controller: _inputController,
+                            onChanged: (s) {
+                              _resetInfo();
+                              widget._taskData.userInput = s;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )),
+          ),
           _buildUserInfo(),
         ],
       ),
@@ -126,7 +143,8 @@ class _ProblemState extends State<Problem> {
   Widget _buildUserInfo() {
     switch (widget._taskData.status) {
       case TaskStatus.CLEAN:
-        return new Text('');
+      case TaskStatus.SHOWED_ANSWER:
+        return new Text(' ');
       case TaskStatus.FAILURE:
         return new Row(
           mainAxisAlignment: MainAxisAlignment.center,

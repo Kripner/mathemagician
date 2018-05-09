@@ -4,7 +4,7 @@ import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/tasks/multiplication_task.dart';
 import 'package:mathemagician/tasks/square_task.dart';
-import 'package:mathemagician/tasks/task.dart';
+import 'package:mathemagician/tasks/task_data.dart';
 
 typedef D DataSupplier<D extends TaskData>();
 

@@ -6,7 +6,7 @@ import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/settings_view.dart';
-import 'package:mathemagician/tasks/task.dart';
+import 'package:mathemagician/tasks/task_data.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 import 'package:mathemagician/utils.dart';
 
@@ -39,6 +39,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     _currentTabController = new TabController(vsync: this, length: Training.TAB_BAR_LENGTH);
     _forwardArrowAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 750));
     _progressAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 500));
+    _progressAnimation.value = _calculateProgress();
   }
 
   void handleSolved(int index) {
@@ -54,8 +55,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   void _handleProgress() {
     widget.settings.problemsSolved.val++;
-    double progressValue =
-        (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+    double progressValue = _calculateProgress();
     print(progressValue);
     _progressAnimation.animateTo(progressValue).then((_) {
       if (progressValue == 1) {
@@ -70,6 +70,8 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
       }
     });
   }
+
+  _calculateProgress() => (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
 
   void _checkForwardArrow() {
     if (_currentTabController.index < _problems.realLength - 2) {

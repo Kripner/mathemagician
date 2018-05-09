@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/settings.dart';
 
-enum TaskStatus { CLEAN, FAILURE, SUCCESS }
+enum TaskStatus { CLEAN, FAILURE, SUCCESS, SHOWED_ANSWER }
 
 abstract class TaskData {
-  bool answerShowed = false;
+  bool answerShown = false;
   TaskStatus status = TaskStatus.CLEAN;
+  String userInput = '';
 
   int getAnswer();
 
@@ -14,7 +15,5 @@ abstract class TaskData {
     return answer == getAnswer();
   }
 
-  MathExpression buildExpression() {
-    return null;
-  }
+  MathExpression buildExpression();
 }

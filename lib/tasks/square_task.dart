@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:mathemagician/math_expression.dart';
-import 'package:mathemagician/tasks/task.dart';
+import 'package:mathemagician/tasks/task_data.dart';
 
 class SquareTaskData extends TaskData {
   final int number;
