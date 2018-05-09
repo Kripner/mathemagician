@@ -31,17 +31,7 @@ class MultiplicationTaskData extends TaskData {
   }
 
   @override
-  Task createTask() {
-    return new MultiplicationTask(this);
-  }
-}
-
-class MultiplicationTask extends Task {
-  MultiplicationTask(MultiplicationTaskData data) : super(data);
-
-  @override
   MathExpression buildExpression() {
-    MultiplicationTaskData data = super.data as MultiplicationTaskData;
-    return new MathExpression('${data._firstNumber} x ${data._secondNumber}');
+    return new MathExpression('$_firstNumber x $_secondNumber');
   }
 }

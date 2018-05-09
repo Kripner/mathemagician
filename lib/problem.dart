@@ -60,21 +60,49 @@ class _ProblemState extends State<Problem> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    TextStyle taskStyle = textTheme.headline;
+
     return new Padding(
       padding: new EdgeInsets.all(10.0),
       child: new Column(
         children: <Widget>[
           new Flexible(
-            child: widget._taskData.createTask(),
-          ),
+              child: new Center(
+            child: new Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                new Flexible(
+                  child: widget._taskData.buildExpression().createExpression(style: taskStyle),
+                ),
+                new Padding(
+                  padding: new EdgeInsets.symmetric(horizontal: 5.0),
+                  child: new Text('=', style: taskStyle),
+                ),
+                new Flexible(
+                  child: new Stack(
+                    children: <Widget>[
+                      new Opacity(
+                          opacity: widget._taskData.answerShowed ? 1.0 : 0.0,
+                          child: new Text(widget._taskData.getAnswer().toString(), style: taskStyle)),
+                      new Opacity(
+                        opacity: widget._taskData.answerShowed ? 0.0 : 1.0,
+                        child: new TextField(
+                          controller: _inputController,
+                          autocorrect: false,
+                          keyboardType: TextInputType.number,
+                          onSubmitted: _numberSubmitted,
+                          autofocus: true,
+                          style: taskStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )),
           _buildUserInfo(),
-          new TextField(
-            controller: _inputController,
-            autocorrect: false,
-            keyboardType: TextInputType.number,
-            onSubmitted: _numberSubmitted,
-            autofocus: true,
-          )
         ],
       ),
     );

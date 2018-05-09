@@ -20,17 +20,7 @@ class SquareTaskData extends TaskData {
   }
 
   @override
-  Task createTask() {
-    return new SquareTask(this);
-  }
-}
-
-class SquareTask extends Task {
-  SquareTask(SquareTaskData data) : super(data);
-
-  @override
   MathExpression buildExpression() {
-    SquareTaskData data = super.data as SquareTaskData;
-    return new MathExpression(data.number.toString() + '\u00B2');
+    return new MathExpression(number.toString() + '\u00B2');
   }
 }
