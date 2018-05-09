@@ -26,28 +26,30 @@ abstract class Task extends StatelessWidget {
     return null;
   }
 
-  Widget buildQuestion(BuildContext context) {
+  Widget buildQuestion(BuildContext context, {TextStyle style}) {
     MathExpression expression = buildExpression();
     if (expression == null)
       throw new Exception('If buildQuestion() is not overriden, buildExpression() musn\'t return null');
-    return expression.createExpression();
+    return expression.createExpression(style: style);
   }
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    TextStyle taskStyle = textTheme.headline;
     return new Center(
       child: new Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Flexible(
-            child: buildQuestion(context),
+            child: buildQuestion(context, style: taskStyle),
           ),
-          new Text(' = '),
+          new Text(' = ', style: taskStyle),
           new Flexible(
             child: new Stack(
               children: <Widget>[
-                new Opacity(opacity: data.answerShowed ? 1.0 : 0.0, child: new Text(data.getAnswer().toString())),
-                new Opacity(opacity: data.answerShowed ? 0.0 : 1.0, child: new Text('?')),
+                new Opacity(opacity: data.answerShowed ? 1.0 : 0.0, child: new Text(data.getAnswer().toString(), style: taskStyle)),
+                new Opacity(opacity: data.answerShowed ? 0.0 : 1.0, child: new Text('_______', style: taskStyle)),
               ],
             ),
           ),

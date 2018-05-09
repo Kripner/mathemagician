@@ -30,29 +30,30 @@ class _ProblemState extends State<Problem> {
     });
   }
 
-  void setFailureInfo() {
+  void _setFailureInfo() {
     setState(() {
       widget._taskData.status = TaskStatus.FAILURE;
     });
   }
 
-  void setSuccessInfo() {
+  void _setSuccessInfo() {
     setState(() {
       widget._taskData.status = TaskStatus.SUCCESS;
     });
   }
 
-  void numberSubmitted(String value) {
+  void _numberSubmitted(String value) {
     if (value.isEmpty) return;
     int answer = int.parse(value, onError: doNothing);
     bool isCorrect = widget._taskData.isCorrect(answer);
 
     if (isCorrect) {
-      setSuccessInfo();
+      _setSuccessInfo();
+      _showAnswer();
       print('Correct!');
       widget._onSolve(widget._index);
     } else {
-      setFailureInfo();
+      _setFailureInfo();
       print('Incorrect');
     }
   }
@@ -71,7 +72,8 @@ class _ProblemState extends State<Problem> {
             controller: _inputController,
             autocorrect: false,
             keyboardType: TextInputType.number,
-            onSubmitted: numberSubmitted,
+            onSubmitted: _numberSubmitted,
+            autofocus: true,
           )
         ],
       ),
@@ -84,6 +86,7 @@ class _ProblemState extends State<Problem> {
         return new Text('');
       case TaskStatus.FAILURE:
         return new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(widget.failureMessage),
             new IconButton(icon: new Icon(Icons.lightbulb_outline), onPressed: _showAnswer)

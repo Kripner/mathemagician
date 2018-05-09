@@ -57,7 +57,8 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   void _handleProgress() {
     widget.settings.problemsSolved.val++;
-    double progressValue = (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+    double progressValue =
+        (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
     print(progressValue);
     _progressAnimation.animateTo(progressValue).then((_) {
       if (progressValue == 1) {
@@ -152,10 +153,13 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
             ),
           ),
           new Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            padding: const EdgeInsets.fromLTRB(10.0, 0.0, 5.0, 0.0),
             child: new Text(rainbow),
           ),
-          new Text(widget.settings.rainbows.val.toString().padLeft(6)),
+          new Text(
+            widget.settings.rainbows.val.toString().padLeft(1),
+            style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25.0),
+          ),
         ],
       ),
     );
