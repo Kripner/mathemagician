@@ -22,7 +22,21 @@ class Problem extends StatefulWidget {
 }
 
 class _ProblemState extends State<Problem> {
-  TextEditingController _inputController;
+  FocusNode _inputFocusNode;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _inputFocusNode = new FocusNode();
+  }
+
+
+  @override
+  void dispose() {
+    _inputFocusNode.dispose();
+    super.dispose();
+  }
 
   void _showAnswer() {
     setState(() {
@@ -60,6 +74,7 @@ class _ProblemState extends State<Problem> {
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).requestFocus(_inputFocusNode);
     TextTheme textTheme = Theme.of(context).textTheme;
     TextStyle taskStyle = textTheme.headline;
 
@@ -88,12 +103,12 @@ class _ProblemState extends State<Problem> {
                       new Opacity(
                         opacity: widget._taskData.answerShowed ? 0.0 : 1.0,
                         child: new TextField(
-                          controller: _inputController,
                           autocorrect: false,
                           keyboardType: TextInputType.number,
                           onSubmitted: _numberSubmitted,
-                          autofocus: true,
+//                          autofocus: true,
                           style: taskStyle,
+                          focusNode: _inputFocusNode,
                         ),
                       ),
                     ],

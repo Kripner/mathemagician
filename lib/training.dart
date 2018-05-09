@@ -39,9 +39,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     _currentTabController = new TabController(vsync: this, length: Training.TAB_BAR_LENGTH);
     _forwardArrowAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 750));
     _progressAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 500));
-    _progressAnimation.addListener(() {
-      setState(() {});
-    });
   }
 
   void handleSolved(int index) {
