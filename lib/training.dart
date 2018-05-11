@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mathemagician/infinite_widget_list.dart';
 import 'package:mathemagician/problem.dart';
+import 'package:mathemagician/rainbows_counter.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/settings_view.dart';
@@ -71,7 +72,8 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     });
   }
 
-  _calculateProgress() => (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+  _calculateProgress() =>
+      (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
 
   void _checkForwardArrow() {
     if (_currentTabController.index < _problems.realLength - 2) {
@@ -105,7 +107,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     double iconSize = 100.0;
     return new Scaffold(
       appBar: new AppBar(
-        actions: <Widget>[new FlatButton(onPressed: _showSettings, child: new Icon(Icons.settings))],
+        actions: <Widget>[new IconButton(onPressed: _showSettings, icon: new Icon(Icons.settings))],
       ),
       body: new Column(
         children: <Widget>[
@@ -142,23 +144,23 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   Widget _buildProgressMeter() {
     return new Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           new Flexible(
-            child: new LinearProgressIndicator(
-              value: _progressAnimation.value,
+            child: new Container(
+              height: 8.0,
+              child: new LinearProgressIndicator(
+                value: _progressAnimation.value,
+              ),
             ),
           ),
           new Padding(
-            padding: const EdgeInsets.fromLTRB(10.0, 0.0, 5.0, 0.0),
-            child: new Text(rainbow),
-          ),
-          new Text(
-            widget.settings.rainbows.val.toString().padLeft(1),
-            style: Theme.of(context).textTheme.body2.copyWith(fontSize: 25.0),
-          ),
+            child: new RainbowCounter(rainbowsCount: widget.settings.rainbows.val),
+            padding: const EdgeInsets.only(left: 15.0),
+          )
+
         ],
       ),
     );
