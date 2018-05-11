@@ -25,7 +25,7 @@ class RainbowCounter extends StatelessWidget {
             textAlign: TextAlign.center,
             text: new TextSpan(
               text: rainbow + '\n',
-              style: textStyle.copyWith(fontSize: 15.0),
+              style: textStyle.copyWith(fontSize: 13.0),
               children: <TextSpan>[
                 new TextSpan(
                   text: rainbowsCount.toString(),

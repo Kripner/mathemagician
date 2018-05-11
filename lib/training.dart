@@ -157,10 +157,12 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
             ),
           ),
           new Padding(
-            child: new RainbowCounter(rainbowsCount: widget.settings.rainbows.val),
+            child: new Hero(
+              child: new RainbowCounter(rainbowsCount: widget.settings.rainbows.val),
+              tag: 'rainbow-counter',
+            ),
             padding: const EdgeInsets.only(left: 15.0),
           )
-
         ],
       ),
     );

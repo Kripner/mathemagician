@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathemagician/colors.dart';
 import 'package:mathemagician/math_net.dart';
+import 'package:mathemagician/rainbows_counter.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/training.dart';
@@ -47,10 +48,8 @@ class _HomeState extends State<Home> {
               new Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: new OutlineButton(
-                  onPressed: startTraining,
+                  onPressed: _startTraining,
                   child: new Text('Train!'),
-                  color: buttonColor,
-                  highlightedBorderColor: buttonColor,
                 ),
               ),
               _buildStats(),
@@ -63,17 +62,23 @@ class _HomeState extends State<Home> {
 
   Widget _buildStats() {
     if (_settings == null) return new Container();
-    return new Text(_settings.rainbows.val.toString() + ' ' + rainbow);
+    return new Hero(
+      child: new RainbowCounter(rainbowsCount: _settings.rainbows.val),
+      tag: 'rainbow-counter'
+    );
   }
 
-  void startTraining() {
+  void _startTraining() {
     if (_settings == null) {
       showTextSnackBar(context, 'Please wait until your settings are loaded');
       return;
     }
-    Navigator.push(
-      context,
-      new MaterialPageRoute(builder: (context) => new Training(_settings)),
-    );
+//    Navigator.push(
+//      context,
+//      new MaterialPageRoute(builder: (context) => new Training(_settings)),
+//    );
+    Navigator.of(context).push(new PageRouteBuilder(
+          pageBuilder: (_, __, ___) => new Training(_settings),
+        ));
   }
 }
