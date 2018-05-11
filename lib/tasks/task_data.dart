@@ -8,6 +8,7 @@ abstract class TaskData {
   bool answerShown = false;
   TaskStatus status = TaskStatus.CLEAN;
   String userInput = '';
+  String lastSubmittedInput = '';
 
   int getAnswer();
 

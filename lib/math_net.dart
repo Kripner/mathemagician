@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:mathemagician/colors.dart';
 import 'package:mathemagician/utils.dart';
 
 class MathNet extends CustomPainter {
@@ -13,7 +14,6 @@ class MathNet extends CustomPainter {
   static const double NODE_RADIUS = 12.0;
   static const double LINE_PROB = 0.85;
   static const double OFFSCREEN_TOLERANCE = 50.0;
-  static const int BACKGROUND_COLOR = 0xFF74AEBE;
   static const int LINES_COLOR = 0xFF4A6A73;
   static const int TEXT_COLOR = 0xFF02556C;
 
@@ -60,7 +60,7 @@ class MathNet extends CustomPainter {
     var rect = Offset.zero & size;
     canvas.drawRect(
       rect,
-      new Paint()..color = const Color(BACKGROUND_COLOR),
+      new Paint()..color = backgroundColor,
     );
     for (int row = 0; row < nodes.length; row++) {
       for (int column = 0; column < nodes[row].length; column++) {

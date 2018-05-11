@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/colors.dart';
 import 'package:mathemagician/math_net.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
@@ -41,11 +42,16 @@ class _HomeState extends State<Home> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Text('Mathemagics!', style: theme.textTheme.title),
-              new Text('The art of mental math'),
+              new Text('Mathemagics!', style: theme.textTheme.headline),
+              new Text('The art of mental math', style: theme.textTheme.subhead),
               new Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: new OutlineButton(onPressed: startTraining, child: new Text('Train!')),
+                child: new OutlineButton(
+                  onPressed: startTraining,
+                  child: new Text('Train!'),
+                  color: buttonColor,
+                  highlightedBorderColor: buttonColor,
+                ),
               ),
               _buildStats(),
             ],

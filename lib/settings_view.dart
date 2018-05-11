@@ -26,14 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
     Settings settings = widget.settings;
     bool useDifficulty = settings.useDifficulty.val;
     return new Scaffold(
-        appBar: new AppBar(
-          actions: <Widget>[
-            new FlatButton(
-              onPressed: null,
-              child: new Icon(Icons.done),
-            )
-          ],
-        ),
+        appBar: new AppBar(),
         body: new SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
           child: new Column(
