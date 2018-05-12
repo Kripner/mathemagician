@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mathemagician/utils.dart';
 
@@ -21,18 +23,16 @@ class RainbowCounter extends StatelessWidget {
         ),
       ),
       child: new Center(
-        child: new RichText(
-            textAlign: TextAlign.center,
-            text: new TextSpan(
-              text: rainbow + '\n', // TODO: rotate rainbow?
-              style: textStyle.copyWith(fontSize: 13.0),
-              children: <TextSpan>[
-                new TextSpan(
-                  text: rainbowsCount.toString(),
-                  style: textStyle.copyWith(fontSize: 20.0),
-                )
-              ],
-            )),
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Transform.rotate(
+              angle: pi/4,
+              child: new Text(rainbow, style: textStyle.copyWith(fontSize: 13.0)),
+            ),
+            new Text(rainbowsCount.toString(), style: textStyle.copyWith(fontSize: 20.0)),
+          ],
+        ),
       ),
     );
   }
