@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathemagician/about.dart';
 import 'package:mathemagician/colors.dart';
 import 'package:mathemagician/math_net.dart';
 import 'package:mathemagician/rainbows_counter.dart';
@@ -7,6 +8,8 @@ import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/training.dart';
 import 'package:mathemagician/user_suggestion.dart';
 import 'package:mathemagician/utils.dart';
+
+import 'package:share/share.dart';
 
 class Home extends StatefulWidget {
   final SettingsStorage _settingsStorage = new SettingsStorage();
@@ -39,7 +42,7 @@ class _HomeState extends State<Home> {
     ThemeData theme = Theme.of(context);
     return new Scaffold(
       body: new CustomPaint(
-        painter: new MathNet(const EdgeInsets.symmetric(vertical: 0.3, horizontal: 0.25)),
+        painter: new MathNet(const EdgeInsets.fromLTRB(0.25, 0.27, 0.25, 0.25)),
         child: new Center(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -57,6 +60,10 @@ class _HomeState extends State<Home> {
                 ),
               ),
               _buildStats(),
+              new Padding(
+                child: _buildBottomActions(),
+                padding: const EdgeInsets.only(top: 30.0),
+              ),
             ],
           ),
         ),
@@ -75,17 +82,40 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Widget _buildBottomActions() {
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new IconButton(
+          onPressed: _initShare,
+          icon: new Icon(Icons.share),
+        ),
+        new IconButton(
+          onPressed: _showAbout,
+          icon: new Icon(Icons.info_outline),
+        ),
+      ],
+    );
+  }
+
   void _startTraining() {
     if (_settings == null) {
       showTextSnackBar(context, 'Please wait until your settings are loaded');
       return;
     }
-//    Navigator.push(
-//      context,
-//      new MaterialPageRoute(builder: (context) => new Training(_settings)),
-//    );
     Navigator.of(context).push(new PageRouteBuilder(
           pageBuilder: (_, __, ___) => new Training(_settings),
         ));
+  }
+
+  void _initShare() {
+    share('Check out the Mathemagician app'); // TODO: google store url
+  }
+
+  void _showAbout() async {
+    await Navigator.push(
+      context,
+      new MaterialPageRoute(builder: (context) => new About()),
+    );
   }
 }
