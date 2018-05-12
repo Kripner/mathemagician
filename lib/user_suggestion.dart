@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,8 @@ import 'package:mathemagician/colors.dart';
 class UserSuggestion extends StatefulWidget {
   static const double ARROW_WIDTH = 15.0;
   static const double CHILD_PADDING = 7.0;
-  static const double TOOLTIP_DX = -20.0;
+  static const double TOOLTIP_DX = 35.0;
+  static const double MAX_WIDTH = 220.0;
 
   final Widget child;
   final String text;
@@ -23,14 +23,12 @@ class _UserSuggestionState extends State<UserSuggestion> {
   Offset target;
   OverlayEntry tooltip;
   OverlayEntry arrow;
-  GlobalKey childKey = new GlobalKey();
+  final GlobalKey childKey = new GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    if (tooltip != null) {
-      _hideTooltip();
-    }
+    _hideTooltip();
     tooltip = new OverlayEntry(
       opaque: false,
       builder: (context) => _buildTooltip(context),
@@ -48,6 +46,12 @@ class _UserSuggestionState extends State<UserSuggestion> {
   }
 
   @override
+  void deactivate() {
+    _hideTooltip();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _hideTooltip();
     super.dispose();
@@ -62,8 +66,11 @@ class _UserSuggestionState extends State<UserSuggestion> {
   }
 
   void _hideTooltip() {
-    tooltip.remove();
-    arrow.remove();
+    if (tooltip != null) {
+      tooltip.remove();
+      arrow.remove();
+      tooltip = arrow = null;
+    }
   }
 
 //
@@ -82,21 +89,29 @@ class _UserSuggestionState extends State<UserSuggestion> {
       final RenderBox box = keyContext.findRenderObject();
       final Offset pos = box.localToGlobal(Offset.zero);
       final double screenWidth = MediaQuery.of(context).size.width;
-      final double width = screenWidth - pos.dx;
+
+      double leftOffset = pos.dx - UserSuggestion.TOOLTIP_DX + box.size.width / 2;
+      double overflow = max(0.0, leftOffset + UserSuggestion.MAX_WIDTH - screenWidth + 10.0);
+      leftOffset -= overflow;
+
       return new Positioned(
         top: pos.dy + box.size.height + UserSuggestion.CHILD_PADDING + UserSuggestion.ARROW_WIDTH / 2,
-        left: pos.dx + UserSuggestion.TOOLTIP_DX,
+        left: leftOffset,
         child: new Material(
-          child: _buildTooltipContent(width),
+          child: new ConstrainedBox(
+            constraints: new BoxConstraints(
+              maxWidth: UserSuggestion.MAX_WIDTH,
+            ),
+            child: _buildTooltipContent(),
+          ),
         ),
       );
     }
     return new Offstage();
   }
 
-  Widget _buildTooltipContent(double width) {
+  Widget _buildTooltipContent() {
     return new Container(
-      width: width,
       decoration: new BoxDecoration(
         // TODO: cut corners
         borderRadius: new BorderRadius.circular(7.0),
