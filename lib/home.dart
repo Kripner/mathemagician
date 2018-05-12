@@ -5,6 +5,7 @@ import 'package:mathemagician/rainbows_counter.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/training.dart';
+import 'package:mathemagician/user_suggestion.dart';
 import 'package:mathemagician/utils.dart';
 
 class Home extends StatefulWidget {
@@ -48,6 +49,9 @@ class _HomeState extends State<Home> {
               new Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: new OutlineButton(
+                  shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+                  ),
                   onPressed: _startTraining,
                   child: new Text('Train!'),
                 ),
@@ -62,9 +66,12 @@ class _HomeState extends State<Home> {
 
   Widget _buildStats() {
     if (_settings == null) return new Container();
-    return new Hero(
-      child: new RainbowCounter(rainbowsCount: _settings.rainbows.val),
-      tag: 'rainbow-counter'
+    return new UserSuggestion(
+      child: new Hero(
+        child: new RainbowCounter(rainbowsCount: _settings.rainbows.val),
+        tag: 'rainbow-counter',
+      ),
+      text: 'Train to get some rainbows!',
     );
   }
 

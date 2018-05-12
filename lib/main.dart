@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathemagician/colors.dart';
 import 'package:mathemagician/home.dart';
-import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/settings.dart';
-import 'package:mathemagician/settings_view.dart';
-import 'package:mathemagician/training.dart';
 
 void main() => runApp(new MyApp());
 
@@ -38,8 +35,8 @@ class MyApp extends StatelessWidget {
         sliderTheme: base.sliderTheme.copyWith(
           overlayColor: sliderInactiveColor,
           thumbColor: sliderActiveColor,
-          activeRailColor: sliderActiveColor,
-          inactiveRailColor: sliderInactiveColor,
+          activeTrackColor: sliderActiveColor,
+          inactiveTrackColor: sliderInactiveColor,
           activeTickMarkColor: sliderTicksActiveColor,
           inactiveTickMarkColor: sliderInactiveColor,
           valueIndicatorColor: sliderActiveColor

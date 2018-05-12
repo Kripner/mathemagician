@@ -17,14 +17,14 @@ class RainbowCounter extends StatelessWidget {
         shape: BoxShape.circle,
         border: new Border.all(
           color: Theme.of(context).primaryColor,
-          width: 2.5,
+          width: 1.5,
         ),
       ),
       child: new Center(
         child: new RichText(
             textAlign: TextAlign.center,
             text: new TextSpan(
-              text: rainbow + '\n',
+              text: rainbow + '\n', // TODO: rotate rainbow?
               style: textStyle.copyWith(fontSize: 13.0),
               children: <TextSpan>[
                 new TextSpan(

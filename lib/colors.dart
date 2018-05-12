@@ -15,3 +15,7 @@ const Color sliderActiveColor = secondaryColor;
 const Color sliderTicksActiveColor = sliderActiveColor;
 const Color sliderInactiveColor = const Color(0x502A2D31);
 const Color sliderTicksInactiveColor = sliderInactiveColor;
+
+const Color tooltipColor = Colors.blue;
+const Color tooltipTextColor = Colors.white;
+const Color tooltipButtonColor = Colors.black;
