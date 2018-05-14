@@ -9,6 +9,7 @@ import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/settings_view.dart';
 import 'package:mathemagician/tasks/task_data.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
+import 'package:mathemagician/user_suggestion.dart';
 import 'package:mathemagician/utils.dart';
 
 class Training extends StatefulWidget {
@@ -28,6 +29,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   TabController _currentTabController;
   AnimationController _forwardArrowAnimation;
   AnimationController _progressAnimation;
+  bool shouldShowSettingsTooltip = false;
 
   @override
   void initState() {
@@ -41,6 +43,18 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     _forwardArrowAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 750));
     _progressAnimation = new AnimationController(vsync: this, duration: new Duration(milliseconds: 500));
     _progressAnimation.value = _calculateProgress();
+
+    widget.settings.problemsSeen.val++;
+    _currentTabController.addListener(() {
+      shouldShowSettingsTooltip = false;
+      _checkForwardArrow();
+      if (_currentTabController.index == _problems.realLength - 1) {
+        widget.settings.problemsSeen.val++;
+        _checkSettingsTooltip();
+        print('problem ${widget.settings.problemsSeen.val}\n');
+      }
+
+    });
   }
 
   void handleSolved(int index) {
@@ -100,14 +114,19 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _currentTabController.addListener(() {
-      _checkForwardArrow();
-    });
-
     double iconSize = 100.0;
     return new Scaffold(
       appBar: new AppBar(
-        actions: <Widget>[new IconButton(onPressed: _showSettings, icon: new Icon(Icons.settings))],
+        actions: <Widget>[
+          new IconButton(
+            onPressed: _showSettings,
+            icon: new UserSuggestionOptional(
+              child: new Icon(Icons.settings),
+              text: 'You can control which types of problems are shown',
+              showText: shouldShowSettingsTooltip,
+            ),
+          ),
+        ],
       ),
       body: new Column(
         children: <Widget>[
@@ -166,5 +185,18 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  void _checkSettingsTooltip() {
+    if (widget.settings.problemsSeen.val % 2 == 0) { // TODO
+      setState(() {
+        shouldShowSettingsTooltip = true;
+        print('showing settings tooltip');
+      });
+    } else {
+      setState(() {
+        shouldShowSettingsTooltip = false;
+      });
+    }
   }
 }

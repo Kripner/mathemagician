@@ -51,13 +51,7 @@ class _HomeState extends State<Home> {
               new Text('The art of mental math', style: theme.textTheme.subhead),
               new Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: new OutlineButton(
-                  shape: BeveledRectangleBorder(
-                    borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
-                  ),
-                  onPressed: _startTraining,
-                  child: new Text('Train!'),
-                ),
+                child: _buildTrainButton(),
               ),
               _buildStats(),
               new Padding(
@@ -71,14 +65,30 @@ class _HomeState extends State<Home> {
     );
   }
 
+  OutlineButton _buildTrainButton() {
+    return new OutlineButton(
+      shape: BeveledRectangleBorder(
+        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+      ),
+      onPressed: _startTraining,
+      child: new Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 17.0, vertical: 11.0),
+        child: new Text(
+          'Train!',
+          style: Theme.of(context).textTheme.button.copyWith(fontSize: 20.0),
+        ),
+      ),
+    );
+  }
+
   Widget _buildStats() {
-    if (_settings == null) return new Container();
-    return new UserSuggestion(
+    return new UserSuggestionOptional(
       child: new Hero(
-        child: new RainbowCounter(rainbowsCount: _settings.rainbows.val),
+        child: new RainbowCounter(rainbowsCount: _settings?.rainbows?.val),
         tag: 'rainbow-counter',
       ),
-      text: 'Train to get some rainbows!',
+      text: 'Start training to get some rainbows!',
+      showText: _settings == null ? false : _settings.rainbows.val == 0,
     );
   }
 

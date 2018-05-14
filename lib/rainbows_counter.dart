@@ -27,10 +27,13 @@ class RainbowCounter extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Transform.rotate(
-              angle: pi/4,
+              angle: pi / 4,
               child: new Text(rainbow, style: textStyle.copyWith(fontSize: 13.0)),
             ),
-            new Text(rainbowsCount.toString(), style: textStyle.copyWith(fontSize: 20.0)),
+            new Text(
+              rainbowsCount?.toString() ?? '',
+              style: textStyle.copyWith(fontSize: 20.0),
+            ),
           ],
         ),
       ),

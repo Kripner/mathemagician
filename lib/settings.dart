@@ -1,16 +1,20 @@
 import 'package:mathemagician/settings_migrations/0to1.dart';
+import 'package:mathemagician/settings_migrations/1to2.dart';
+import 'package:mathemagician/settings_migrations/2to3.dart';
 import 'package:mathemagician/settings_migrations/settings_migration.dart';
 import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/utils.dart';
 
 class Settings {
-  static const int SERIAL_VERSION_ID = 1;
+  static const int SERIAL_VERSION_ID = 3;
 
   static const Map<int, SettingsMigration> MIGRATIONS = {
     0: const Migration0to1(),
+    1: const Migration1to2(),
+    2: const Migration2to3(),
   };
 
-  // VISIBLE SETTINGS
+  // USER SETTINGS
   final SettingsIntegerItem difficulty;
   final SettingsItem<bool> useDifficulty;
 
@@ -19,10 +23,12 @@ class Settings {
 
   final SettingsItem<bool> jumpAfterSolve;
 
-  // INVISIBLE SETTINGS
+  // SYSTEM SETTINGS
   // this redundancy will be convenient later (maybe)
   final SettingsIntegerItem rainbows;
   final SettingsIntegerItem problemsSolved;
+  final SettingsItem problemsSeen;
+  final SettingsItem visitedSettings;
 
   // DEFAULT
   // @formatter:off
@@ -55,6 +61,8 @@ class Settings {
     'jumpAfterSolve': true,
     'rainbows': 0,
     'problemsSolved': 0,
+    'visitedSettings': false,
+    'problemsSeen': 0,
   };
   // @formatter:on
 
@@ -71,10 +79,13 @@ class Settings {
         selectedTasks = new SettingsItem(_castInternalMap(map['selectedTasks'])),
         jumpAfterSolve = new SettingsItem(map['jumpAfterSolve']),
         rainbows = new SettingsIntegerItem(map['rainbows']),
-        problemsSolved = new SettingsIntegerItem(map['problemsSolved']) {
+        problemsSolved = new SettingsIntegerItem(map['problemsSolved']),
+        visitedSettings = new SettingsItem(map['visitedSettings']),
+        problemsSeen = new SettingsIntegerItem(map['problemsSeen']) {
     // _onChanged method not available in the initialization list
     difficulty.onChanged = useDifficulty.onChanged = selectedGroups.onChanged = selectedTasks.onChanged =
-        jumpAfterSolve.onChanged = rainbows.onChanged = problemsSolved.onChanged = _onChanged;
+        jumpAfterSolve.onChanged = rainbows.onChanged = problemsSolved.onChanged = visitedSettings.onChanged =
+        problemsSeen.onChanged = _onChanged;
   }
 
 
@@ -88,6 +99,8 @@ class Settings {
 
       'rainbows': rainbows.val,
       'problemsSolved': problemsSolved.val,
+      'visitedSettings': visitedSettings.val,
+      'problemsSeen': problemsSeen.val,
     };
   }
 

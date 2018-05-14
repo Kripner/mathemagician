@@ -4,6 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mathemagician/colors.dart';
 
+
+class UserSuggestionOptional extends StatelessWidget {
+  final bool showText;
+  final Widget child;
+  final String text;
+
+  const UserSuggestionOptional({Key key, this.child, this.text, this.showText: true}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (!showText) return child;
+    return new UserSuggestion(child: child, text: text);
+  }
+}
+
+
 class UserSuggestion extends StatefulWidget {
   static const double ARROW_WIDTH = 15.0;
   static const double CHILD_PADDING = 7.0;
