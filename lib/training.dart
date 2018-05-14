@@ -29,7 +29,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   TabController _currentTabController;
   AnimationController _forwardArrowAnimation;
   AnimationController _progressAnimation;
-  bool shouldShowSettingsTooltip = false;
+  bool _shouldShowSettingsTooltip = false;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
     widget.settings.problemsSeen.val++;
     _currentTabController.addListener(() {
-      shouldShowSettingsTooltip = false;
+      _shouldShowSettingsTooltip = false;
       _checkForwardArrow();
       if (_currentTabController.index == _problems.realLength - 1) {
         widget.settings.problemsSeen.val++;
@@ -55,6 +55,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
       }
 
     });
+    _progressAnimation.addListener(() => setState((){}));
   }
 
   void handleSolved(int index) {
@@ -72,8 +73,8 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     widget.settings.problemsSolved.val++;
     double progressValue = _calculateProgress();
     print(progressValue);
-    _progressAnimation.animateTo(progressValue).then((_) {
-      if (progressValue == 1) {
+    _progressAnimation.animateTo(progressValue == 0.0 ? 1.0 : progressValue).then((_) {
+      if (widget.settings.problemsSolved.val % Training.PROBLEMS_BATCH_SIZE == 0) {
         setState(() {
           widget.settings.rainbows.val++;
         });
@@ -83,11 +84,11 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
           });
         });
       }
-    });
+    }).catchError((e) => print(e));
   }
 
   _calculateProgress() =>
-      (widget.settings.problemsSolved.val % (Training.PROBLEMS_BATCH_SIZE + 1)) / Training.PROBLEMS_BATCH_SIZE;
+      (widget.settings.problemsSolved.val % Training.PROBLEMS_BATCH_SIZE) / Training.PROBLEMS_BATCH_SIZE;
 
   void _checkForwardArrow() {
     if (_currentTabController.index < _problems.realLength - 2) {
@@ -123,7 +124,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
             icon: new UserSuggestionOptional(
               child: new Icon(Icons.settings),
               text: 'You can control which types of problems are shown',
-              showText: shouldShowSettingsTooltip,
+              showText: _shouldShowSettingsTooltip,
             ),
           ),
         ],
@@ -190,12 +191,12 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   void _checkSettingsTooltip() {
     if (widget.settings.problemsSeen.val % 2 == 0) { // TODO
       setState(() {
-        shouldShowSettingsTooltip = true;
+        _shouldShowSettingsTooltip = true;
         print('showing settings tooltip');
       });
     } else {
       setState(() {
-        shouldShowSettingsTooltip = false;
+        _shouldShowSettingsTooltip = false;
       });
     }
   }
