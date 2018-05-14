@@ -16,12 +16,20 @@ typedef void Consumer<T>(T value);
 
 void showTextSnackBar(BuildContext context, String text) {
   Scaffold.of(context).showSnackBar(new SnackBar(
-    content: new Text(text),
-  ));
+        content: new Text(text),
+      ));
 }
 
 double randomLikeNormal(Random random, double mean, double variance) {
   // this looks pretty much like gaussian in my experiments
   double base = (random.nextDouble() + random.nextDouble() + random.nextDouble() + random.nextDouble()) / 4;
   return (base - .5) * variance + mean;
+}
+
+int generateNumber(int numOfDigits, {bool allowPowers: true}) {
+  final int min = pow(10, numOfDigits - 1);
+  final int max = pow(10, numOfDigits);
+  final int result = min + new Random().nextInt(max - min + 1);
+  if (!allowPowers && (result % 10 == 0 || result == 1)) return generateNumber(numOfDigits);
+  return result;
 }

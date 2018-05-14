@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:mathemagician/math_expression.dart';
 import 'package:mathemagician/tasks/task_data.dart';
+import 'package:mathemagician/utils.dart';
 
 class MultiplicationTaskData extends TaskData {
   int _firstNumber;
@@ -15,14 +16,8 @@ class MultiplicationTaskData extends TaskData {
       firstDigits -= secondDigits;
     }
 
-    _firstNumber = _generateNumber(firstDigits);
-    _secondNumber = _generateNumber(secondDigits);
-  }
-
-  static int _generateNumber(numOfDigits) {
-    final int min = pow(10, numOfDigits - 1);
-    final int max = pow(10, numOfDigits);
-    return min + new Random().nextInt(max - min + 1);
+    _firstNumber = generateNumber(firstDigits, allowPowers: false);
+    _secondNumber = generateNumber(secondDigits, allowPowers: false);
   }
 
   @override

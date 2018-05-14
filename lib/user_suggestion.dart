@@ -130,8 +130,7 @@ class _UserSuggestionState extends State<UserSuggestion> {
   Widget _buildTooltipContent() {
     return new Container(
       decoration: new BoxDecoration(
-        // TODO: cut corners
-        borderRadius: new BorderRadius.circular(7.0),
+//        borderRadius: new BorderRadius.circular(7.0),
         color: tooltipColor,
       ),
       alignment: Alignment.center,
