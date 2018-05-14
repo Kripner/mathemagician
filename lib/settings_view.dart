@@ -19,6 +19,7 @@ class _SettingsViewState extends State<SettingsView> {
   void initState() {
     super.initState();
     _groupsExpanded = new Map.fromIterable(tasksGroups, value: (_) => false);
+    widget.settings.visitedSettings.val = true;
   }
 
   @override

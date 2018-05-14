@@ -189,7 +189,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   }
 
   void _checkSettingsTooltip() {
-    if (widget.settings.problemsSeen.val % 2 == 0) { // TODO
+    if (widget.settings.problemsSeen.val == 3) {
       setState(() {
         _shouldShowSettingsTooltip = true;
         print('showing settings tooltip');
