@@ -193,6 +193,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   void _checkSettingsTooltip() {
     if (widget.settings.problemsSeen.val == 3) {
+      widget.settings.visitedSettings.val = true;
       setState(() {
         _shouldShowSettingsTooltip = true;
       });

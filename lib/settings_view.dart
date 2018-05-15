@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mathemagician/checkbox_with_label.dart';
 import 'package:mathemagician/settings.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
+import 'package:mathemagician/utils.dart';
 
 class SettingsView extends StatefulWidget {
   final Settings settings;
@@ -13,6 +14,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey();
   Map<TasksGroup, bool> _groupsExpanded;
 
   @override
@@ -27,21 +29,27 @@ class _SettingsViewState extends State<SettingsView> {
     Settings settings = widget.settings;
     bool useDifficulty = settings.useDifficulty.val;
     return new Scaffold(
-        appBar: new AppBar(),
-        body: new SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
-          child: new Column(
-            children: <Widget>[
-              new Text('Difficulty'),
-              _buildDifficultySlider(settings, useDifficulty),
-              new Divider(color: Colors.grey, height: 50.0),
-              _buildDifficultyCheckBox(settings),
-              _buildTasksSelector(settings, !useDifficulty),
-              new Divider(color: Colors.grey, height: 50.0),
-              _buildJumpAfterSolvedCheckbox(settings),
-            ],
-          ),
-        ));
+      key: scaffoldKey,
+      appBar: new AppBar(
+        title: new Text('Settings'),
+      ),
+      body: new SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
+        child: new Column(
+          children: <Widget>[
+            new Text('Difficulty: ' + settings.difficulty.val.toString()),
+            _buildDifficultySlider(settings, useDifficulty),
+            new Divider(color: Colors.grey, height: 50.0),
+            _buildDifficultyCheckBox(settings),
+            _buildTasksSelector(settings, !useDifficulty),
+            new Divider(color: Colors.grey, height: 50.0),
+            _buildJumpAfterSolvedCheckbox(settings),
+            new Divider(color: Colors.grey, height: 50.0),
+            _buildResetProgressButton(settings),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildDifficultySlider(Settings settings, bool enabled) {
@@ -126,5 +134,47 @@ class _SettingsViewState extends State<SettingsView> {
       },
       label: new Text('Jump to next problem after solving the previous?'),
     );
+  }
+
+  Widget _buildResetProgressButton(Settings settings) {
+    return new Row(
+      children: <Widget>[
+        new OutlineButton(
+          onPressed: settings.problemsSolved.val == 0 ? null : _resetProgress,
+          child: new Text('Reset my progress'),
+        ),
+      ],
+    );
+  }
+
+  void _resetProgress() async {
+    bool reset = await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+            title: new Text("Reset progress"),
+            content: new Text(
+                "Do your really want to reset your progress?\nThis action can't be taken back and you will lose all your rainbows."),
+            actions: <Widget>[
+              new OutlineButton(
+                child: new Text('Cancel'),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              new Padding(
+                padding: const EdgeInsets.only(left: 18.0),
+                child: new OutlineButton(
+                  child: new Text('Reset my progress'),
+                  onPressed: () => Navigator.pop(context, true),
+                ),
+              ),
+            ],
+            contentPadding: const EdgeInsets.all(20.0),
+          ),
+    );
+    if (reset != null && reset) {
+      widget.settings.resetProgress();
+      scaffoldKey.currentState.showSnackBar(new SnackBar(
+            content: new Text('Your progress has been reseted'),
+          ));
+    }
   }
 }

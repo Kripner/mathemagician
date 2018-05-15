@@ -84,8 +84,7 @@ class Settings {
         problemsSolved = new SettingsIntegerItem('problemsSolved'),
         visitedSettings = new SettingsItem('visitedSettings'),
         problemsSeen = new SettingsIntegerItem('problemsSeen') {
-    map['selectedGroups'] = _fromInternalMap(map['selectedGroups']);
-    map['selectedTasks'] = _fromInternalMap(map['selectedTasks']);
+
     _items = [
       difficulty,
       useDifficulty,
@@ -98,18 +97,24 @@ class Settings {
       problemsSeen
     ];
     _items.forEach((item) {
-      item.setWithoutSave(map[item.name]);
+      var value = map[item.name];
+      if (!value.runtimeType.toString().startsWith('_InternalLinkedHashMap')) {
+        item.setWithoutSave(value);
+      }
+
       item.onChanged = _save;
     });
+    selectedGroups.val = _fromInternalMap(map['selectedGroups']);
+    selectedTasks.val =  _fromInternalMap(map['selectedTasks']);
   }
 
 
-  static Map<K, V> _fromInternalMap<K, V>(var internalMap) {
-    return new Map<K, V>.from(internalMap as Map<K, dynamic>);
+  static Map<String, V> _fromInternalMap<V>(var internalMap) {
+    return new Map<String, V>.from(internalMap as Map<String, dynamic>);
   }
 
   Map<String, dynamic> toMap() {
-    return new Map.fromIterables(_items.map((item) => item.name), _items);
+    return new Map.fromEntries(_items.map((item) => new MapEntry(item.name, item.val)));
   }
 
   void _save() {
