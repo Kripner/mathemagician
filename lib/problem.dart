@@ -71,7 +71,12 @@ class _ProblemState extends State<Problem> {
   void _numberSubmitted(String value) {
     if (value.isEmpty) return;
     widget.taskData.lastSubmittedInput = value;
-    int answer = int.parse(value, onError: doNothing);
+    int answer;
+    try {
+      answer = int.parse(value);
+    } on FormatException {
+      return;
+    }
     bool isCorrect = widget.taskData.isCorrect(answer);
 
     if (isCorrect) {
@@ -86,14 +91,15 @@ class _ProblemState extends State<Problem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.taskData.status == TaskStatus.CLEAN) FocusScope.of(context).requestFocus(_inputFocusNode);
+    if (widget.taskData.status != TaskStatus.SUCCESS)
+      FocusScope.of(context).requestFocus(_inputFocusNode);
     TextTheme textTheme = Theme.of(context).textTheme;
 
     return new Padding(
       padding: new EdgeInsets.all(10.0),
       child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _buildUserInfo(textTheme.headline),
           new Flexible(
@@ -104,8 +110,7 @@ class _ProblemState extends State<Problem> {
           new Padding(
             child: new Text(
               'Difficulty ' + widget.taskData.difficulty.toString(),
-              textAlign: TextAlign.start,
-              style: Theme.of(context).textTheme.subhead,
+              style: Theme.of(context).textTheme.body2.copyWith(fontSize: 18.0),
             ),
             padding: const EdgeInsets.fromLTRB(20.0, 7.0, 0.0, 0.0),
           ),
@@ -158,21 +163,12 @@ class _ProblemState extends State<Problem> {
     );
   }
 
-//
-//  Widget _buildAnswer(TextStyle style) {
-//    return new Column(
-//      children: <Widget>[
-//        new Text(widget._taskData.getAnswer().toString(), style: style),
-//        new Text(widget._taskData.getAnswer().toString(), style: style),
-//      ],
-//    );
-//  }
-
   Widget _buildUserInfo(TextStyle style) {
     switch (widget.taskData.status) {
       case TaskStatus.CLEAN:
       case TaskStatus.SHOWED_ANSWER:
-        return new Text(' ');
+        // because I need the text to take vertical space even when empty
+        return new Opacity(opacity: 0.0, child: new Text('Mathemagics', style: style));
       case TaskStatus.FAILURE:
         return new Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -181,11 +177,17 @@ class _ProblemState extends State<Problem> {
               widget.failureMessage,
               style: style,
             ),
-            new IconButton(icon: new Icon(Icons.lightbulb_outline), onPressed: _showAnswer)
+            new Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: new GestureDetector(
+                child: new Icon(Icons.lightbulb_outline),
+                onTap: _showAnswer,
+              ),
+            ),
           ],
         );
       case TaskStatus.SUCCESS:
-        return new Text(widget.successMessage, style: style);
+        return new Text(widget.successMessage, style: style, textAlign: TextAlign.center,);
       default:
         throw new Exception();
     }

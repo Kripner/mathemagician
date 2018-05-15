@@ -5,12 +5,9 @@ import 'package:mathemagician/infinite_widget_list.dart';
 import 'package:mathemagician/problem.dart';
 import 'package:mathemagician/rainbows_counter.dart';
 import 'package:mathemagician/settings.dart';
-import 'package:mathemagician/settings_storage.dart';
 import 'package:mathemagician/settings_view.dart';
-import 'package:mathemagician/tasks/task_data.dart';
 import 'package:mathemagician/tasks/task_data_supplier.dart';
 import 'package:mathemagician/user_suggestion.dart';
-import 'package:mathemagician/utils.dart';
 
 class Training extends StatefulWidget {
   static const int TAB_BAR_LENGTH = 1000;
@@ -51,7 +48,7 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
       if (_currentTabController.index == _problems.realLength - 1) {
         widget.settings.problemsSeen.val++;
         _checkSettingsTooltip();
-        print('problem ${widget.settings.problemsSeen.val}\n');
+        print('Created new problem ${widget.settings.problemsSeen.val}\n');
       }
     });
     _progressAnimation.addListener(() => setState(() {}));
@@ -71,7 +68,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
   void _handleProgress() {
     widget.settings.problemsSolved.val++;
     double progressValue = _calculateProgress();
-    print(progressValue);
     _progressAnimation.animateTo(progressValue == 0.0 ? 1.0 : progressValue).then((_) {
       if (widget.settings.problemsSolved.val % Training.PROBLEMS_BATCH_SIZE == 0) {
         setState(() {
@@ -110,11 +106,13 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
       context,
       new MaterialPageRoute(builder: (context) => new SettingsView(widget.settings)),
     );
+//    setState(() {});
+    _currentTabController.animateTo(_problems.realLength);
   }
 
   @override
   Widget build(BuildContext context) {
-    double iconSize = 100.0;
+//    double iconSize = 100.0;
     return new Scaffold(
       appBar: new AppBar(
         actions: <Widget>[
@@ -138,21 +136,21 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
                   controller: _currentTabController,
                   children: _problems,
                 ),
-                new Positioned(
-                  right: 7.0,
-                  bottom: (MediaQuery.of(context).size.height - iconSize) / 2,
-                  child: new FadeTransition(
-                    opacity: _forwardArrowAnimation,
-                    child: new IconButton(
-                      iconSize: iconSize,
-                      color: Colors.grey,
-                      icon: new Icon(Icons.keyboard_arrow_right),
-                      onPressed: () {
-                        _currentTabController.animateTo(_problems.realLength);
-                      },
-                    ),
-                  ),
-                ),
+//                new Positioned(
+//                  right: 7.0,
+//                  bottom: (MediaQuery.of(context).size.height - iconSize) / 2,
+//                  child: new FadeTransition(
+//                    opacity: _forwardArrowAnimation,
+//                    child: new IconButton(
+//                      iconSize: iconSize,
+//                      color: Colors.grey,
+//                      icon: new Icon(Icons.keyboard_arrow_right),
+//                      onPressed: () {
+//                        _currentTabController.animateTo(_problems.realLength);
+//                      },
+//                    ),
+//                  ),
+//                ),
               ],
             ),
           ),
@@ -197,7 +195,6 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
     if (widget.settings.problemsSeen.val == 3) {
       setState(() {
         _shouldShowSettingsTooltip = true;
-        print('showing settings tooltip');
       });
     } else {
       setState(() {
