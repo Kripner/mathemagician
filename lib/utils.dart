@@ -26,10 +26,18 @@ double randomLikeNormal(Random random, double mean, double variance) {
   return (base - .5) * variance + mean;
 }
 
+bool isInteger(double x) {
+  return x.toInt() == x;
+}
+
+double logBase(double base, double x) {
+  return log(x) / log(base);
+}
+
 int generateNumber(int numOfDigits, {bool allowPowers: true}) {
   final int min = pow(10, numOfDigits - 1);
   final int max = pow(10, numOfDigits);
   final int result = min + new Random().nextInt(max - min + 1);
-  if (!allowPowers && (result % 10 == 0 || result == 1)) return generateNumber(numOfDigits);
+  if (!allowPowers && isInteger(logBase(10.0, result.toDouble()))) return generateNumber(numOfDigits, allowPowers: false);
   return result;
 }
