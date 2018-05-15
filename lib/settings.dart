@@ -27,8 +27,8 @@ class Settings {
   // this redundancy will be convenient later (maybe)
   final SettingsIntegerItem rainbows;
   final SettingsIntegerItem problemsSolved;
-  final SettingsItem problemsSeen;
-  final SettingsItem visitedSettings;
+  final SettingsIntegerItem problemsSeen;
+  final SettingsItem<bool> visitedSettings;
 
   // DEFAULT
   // @formatter:off
@@ -66,6 +66,8 @@ class Settings {
   };
   // @formatter:on
 
+  List<SettingsItem> _items;
+
   // CLASS LOGIC
   final SettingsStorage storage;
 
@@ -73,64 +75,87 @@ class Settings {
       : this.fromMap(DEFAULT_VALUES, storage: storage);
 
   Settings.fromMap(Map<String, dynamic> map, {this.storage})
-      : difficulty = new SettingsIntegerItem(map['difficulty'], min: 1, max: 10),
-        useDifficulty = new SettingsItem(map['useDifficulty']),
-        selectedGroups = new SettingsItem(_castInternalMap(map['selectedGroups'])),
-        selectedTasks = new SettingsItem(_castInternalMap(map['selectedTasks'])),
-        jumpAfterSolve = new SettingsItem(map['jumpAfterSolve']),
-        rainbows = new SettingsIntegerItem(map['rainbows']),
-        problemsSolved = new SettingsIntegerItem(map['problemsSolved']),
-        visitedSettings = new SettingsItem(map['visitedSettings']),
-        problemsSeen = new SettingsIntegerItem(map['problemsSeen']) {
-    // _onChanged method not available in the initialization list
-    difficulty.onChanged = useDifficulty.onChanged = selectedGroups.onChanged = selectedTasks.onChanged =
-        jumpAfterSolve.onChanged = rainbows.onChanged = problemsSolved.onChanged = visitedSettings.onChanged =
-        problemsSeen.onChanged = _onChanged;
+      : difficulty = new SettingsIntegerItem('difficulty', min: 1, max: 10),
+        useDifficulty = new SettingsItem('useDifficulty'),
+        selectedGroups = new SettingsItem('selectedGroups'),
+        selectedTasks = new SettingsItem('selectedTasks'),
+        jumpAfterSolve = new SettingsItem('jumpAfterSolve'),
+        rainbows = new SettingsIntegerItem('rainbows'),
+        problemsSolved = new SettingsIntegerItem('problemsSolved'),
+        visitedSettings = new SettingsItem('visitedSettings'),
+        problemsSeen = new SettingsIntegerItem('problemsSeen') {
+    map['selectedGroups'] = _fromInternalMap(map['selectedGroups']);
+    map['selectedTasks'] = _fromInternalMap(map['selectedTasks']);
+    _items = [
+      difficulty,
+      useDifficulty,
+      selectedGroups,
+      selectedTasks,
+      jumpAfterSolve,
+      rainbows,
+      problemsSolved,
+      visitedSettings,
+      problemsSeen
+    ];
+    _items.forEach((item) {
+      item.setWithoutSave(map[item.name]);
+      item.onChanged = _save;
+    });
   }
 
+
+  static Map<K, V> _fromInternalMap<K, V>(var internalMap) {
+    return new Map<K, V>.from(internalMap as Map<K, dynamic>);
+  }
 
   Map<String, dynamic> toMap() {
-    return {
-      'difficulty': difficulty.val,
-      'useDifficulty': useDifficulty.val,
-      'selectedGroups': selectedGroups.val,
-      'selectedTasks': selectedTasks.val,
-      'jumpAfterSolve': jumpAfterSolve.val,
-
-      'rainbows': rainbows.val,
-      'problemsSolved': problemsSolved.val,
-      'visitedSettings': visitedSettings.val,
-      'problemsSeen': problemsSeen.val,
-    };
+    return new Map.fromIterables(_items.map((item) => item.name), _items);
   }
 
-  void _onChanged() {
+  void _save() {
     storage?.save(this)?.catchError((e) {
       print('Saving settings failed: ' + e.toString());
     });
   }
 
-  static Map<K, V> _castInternalMap<K, V>(var internalMap) {
-    return new Map<K, V>.from(internalMap as Map<K, dynamic>);
+  void resetProgress() {
+    <SettingsItem>[rainbows, problemsSolved, problemsSeen, visitedSettings]
+        .forEach((item) => item.reset());
+    _save();
+  }
+
+  void resetSettings() {
+    <SettingsItem>[difficulty, useDifficulty, selectedGroups, selectedTasks, jumpAfterSolve]
+        .forEach((item) => item.reset());
+    _save();
   }
 }
 
 class SettingsItem<T> {
-  T _value;
   final Predicate<T> validator;
+  final String name;
+  T _value;
   Function onChanged;
 
-  SettingsItem(this._value, {this.validator});
+  SettingsItem(this.name, {this.validator});
 
   get val {
     return _value;
   }
 
   set val(T newValue) {
-    if (this.validator != null && !validator(newValue)) throw new Exception('Illegal value');
-    _value = newValue;
+    setWithoutSave(newValue);
     assert (onChanged != null);
     onChanged();
+  }
+
+  void setWithoutSave(T newValue) {
+    if (this.validator != null && !validator(newValue)) throw new Exception('Illegal value');
+    _value = newValue;
+  }
+
+  void reset() {
+    _value = Settings.DEFAULT_VALUES[name];
   }
 }
 
@@ -138,8 +163,8 @@ class SettingsIntegerItem extends SettingsItem<int> {
   final int min;
   final int max;
 
-  SettingsIntegerItem(int value, {int min, int max})
+  SettingsIntegerItem(String name, {int min, int max})
       : this.min = min,
         this.max = max,
-        super(value, validator: min == null || max == null ? null : (d) => d >= min && d <= max);
+        super(name, validator: min == null || max == null ? null : (d) => d >= min && d <= max);
 }
