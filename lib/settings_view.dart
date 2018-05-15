@@ -5,6 +5,8 @@ import 'package:mathemagician/tasks/task_data_supplier.dart';
 import 'package:mathemagician/utils.dart';
 
 class SettingsView extends StatefulWidget {
+  static const double BUTTON_WIDTH = 135.0;
+
   final Settings settings;
 
   SettingsView(this.settings);
@@ -45,7 +47,11 @@ class _SettingsViewState extends State<SettingsView> {
             new Divider(color: Colors.grey, height: 50.0),
             _buildJumpAfterSolvedCheckbox(settings),
             new Divider(color: Colors.grey, height: 50.0),
-            _buildResetProgressButton(settings),
+            _buildResetSettingsButton(settings),
+            new Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: _buildResetProgressButton(settings),
+            ),
           ],
         ),
       ),
@@ -136,12 +142,43 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  Widget _buildResetSettingsButton(Settings settings) {
+    return new Row(
+      children: <Widget>[
+        new Container(
+          width: SettingsView.BUTTON_WIDTH,
+          child: new OutlineButton(
+            onPressed: () {
+              settings.resetSettings();
+              scaffoldKey.currentState.showSnackBar(new SnackBar(
+                content: new Text('Settings reset to default values'),
+              ));
+              setState(() {});
+            },
+            child: new Text('Reset settings'),
+          ),
+        ),
+        new Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: new Text('Reset to default values'),
+        ),
+      ],
+    );
+  }
+
   Widget _buildResetProgressButton(Settings settings) {
     return new Row(
       children: <Widget>[
-        new OutlineButton(
-          onPressed: settings.problemsSolved.val == 0 ? null : _resetProgress,
-          child: new Text('Reset my progress'),
+        new Container(
+          width: SettingsView.BUTTON_WIDTH,
+          child: new OutlineButton(
+            onPressed: settings.problemsSolved.val == 0 ? null : _resetProgress,
+            child: new Text('Reset progress'),
+          ),
+        ),
+        new Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: new Text('Throw away your rainbows'),
         ),
       ],
     );
@@ -173,8 +210,9 @@ class _SettingsViewState extends State<SettingsView> {
     if (reset != null && reset) {
       widget.settings.resetProgress();
       scaffoldKey.currentState.showSnackBar(new SnackBar(
-            content: new Text('Your progress has been reseted'),
-          ));
+        content: new Text('Your progress has been reseted'),
+      ));
+      setState(() {});
     }
   }
 }

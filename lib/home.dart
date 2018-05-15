@@ -88,7 +88,7 @@ class _HomeState extends State<Home> {
         tag: 'rainbow-counter',
       ),
       text: 'Start training to get some rainbows!',
-      showText: _settings == null ? false : _settings.rainbows.val == 0,
+      showText: _settings == null ? false : _settings.problemsSolved.val == 0,
     );
   }
 
