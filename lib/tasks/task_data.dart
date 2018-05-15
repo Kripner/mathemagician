@@ -9,6 +9,7 @@ abstract class TaskData {
   TaskStatus status = TaskStatus.CLEAN;
   String userInput = '';
   String lastSubmittedInput = '';
+  int difficulty;
 
   int getAnswer();
 

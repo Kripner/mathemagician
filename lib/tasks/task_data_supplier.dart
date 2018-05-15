@@ -65,5 +65,7 @@ TaskData randomTaskData(Settings settings) {
         .expand((g) => g) // flatten (join all tasks together)
         .where((taskContainer) => settings.selectedTasks.val[taskContainer.id]);
   }
-  return activeTasks.toList(growable: false)[new Random().nextInt(activeTasks.length)]._supplier();
+  TaskContainer selectedTask = activeTasks.toList(growable: false)[new Random().nextInt(activeTasks.length)];
+  int displayDifficulty = settings.useDifficulty.val ? settings.difficulty.val : selectedTask._minDifficulty;
+  return selectedTask._supplier()..difficulty = displayDifficulty;
 }

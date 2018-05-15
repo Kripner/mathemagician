@@ -10,12 +10,12 @@ class Problem extends StatefulWidget {
   final String failureMessage = 'Not quite right';
   final String successMessage = 'Good job!';
 
+  final TaskData taskData;
   final Settings _settings;
   final Consumer<int> _onSolve;
-  final TaskData _taskData;
   final int _index;
 
-  Problem(this._settings, this._taskData, this._onSolve, this._index);
+  Problem(this._settings, this.taskData, this._onSolve, this._index);
 
   @override
   _ProblemState createState() => new _ProblemState();
@@ -28,8 +28,8 @@ class _ProblemState extends State<Problem> {
   @override
   void initState() {
     super.initState();
-    print(widget._taskData.userInput);
-    _inputController = new TextEditingController(text: widget._taskData.userInput);
+    print(widget.taskData.userInput);
+    _inputController = new TextEditingController(text: widget.taskData.userInput);
     _inputFocusNode = new FocusNode();
   }
 
@@ -43,36 +43,36 @@ class _ProblemState extends State<Problem> {
   void _showAnswer() {
     setState(() {
       _inputFocusNode.unfocus();
-      widget._taskData.answerShown = true;
-      widget._taskData.status = TaskStatus.SHOWED_ANSWER;
+      widget.taskData.answerShown = true;
+      widget.taskData.status = TaskStatus.SHOWED_ANSWER;
     });
   }
 
   void _failure() {
     setState(() {
-      widget._taskData.status = TaskStatus.FAILURE;
+      widget.taskData.status = TaskStatus.FAILURE;
     });
   }
 
   void _success() {
     setState(() {
       _inputFocusNode.unfocus();
-      widget._taskData.answerShown = true;
-      widget._taskData.status = TaskStatus.SUCCESS;
+      widget.taskData.answerShown = true;
+      widget.taskData.status = TaskStatus.SUCCESS;
     });
   }
 
   void _resetInfo() {
     setState(() {
-      widget._taskData.status = TaskStatus.CLEAN;
+      widget.taskData.status = TaskStatus.CLEAN;
     });
   }
 
   void _numberSubmitted(String value) {
     if (value.isEmpty) return;
-    widget._taskData.lastSubmittedInput = value;
+    widget.taskData.lastSubmittedInput = value;
     int answer = int.parse(value, onError: doNothing);
-    bool isCorrect = widget._taskData.isCorrect(answer);
+    bool isCorrect = widget.taskData.isCorrect(answer);
 
     if (isCorrect) {
       _success();
@@ -86,20 +86,33 @@ class _ProblemState extends State<Problem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget._taskData.status == TaskStatus.CLEAN) FocusScope.of(context).requestFocus(_inputFocusNode);
+    if (widget.taskData.status == TaskStatus.CLEAN) FocusScope.of(context).requestFocus(_inputFocusNode);
     TextTheme textTheme = Theme.of(context).textTheme;
 
     return new Padding(
       padding: new EdgeInsets.all(10.0),
       child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           _buildUserInfo(textTheme.headline),
           new Flexible(
-            flex: 2,
-            child: new Center(child: _buildExpression(textTheme.display1.copyWith(fontSize: 35.0))),
+            flex: 1,
+            child: new Container(),
           ),
-          new Flexible(flex: 1, child: new Container(),),
+          new Center(child: _buildExpression(textTheme.display1.copyWith(fontSize: 35.0))),
+          new Padding(
+            child: new Text(
+              'Difficulty ' + widget.taskData.difficulty.toString(),
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.subhead,
+            ),
+            padding: const EdgeInsets.fromLTRB(20.0, 7.0, 0.0, 0.0),
+          ),
+          new Flexible(
+            flex: 3,
+            child: new Container(),
+          ),
         ],
       ),
     );
@@ -110,7 +123,7 @@ class _ProblemState extends State<Problem> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         new Flexible(
-          child: widget._taskData.buildExpression().createExpression(style: taskStyle),
+          child: widget.taskData.buildExpression().createExpression(style: taskStyle),
         ),
         new Padding(
           padding: new EdgeInsets.symmetric(horizontal: 5.0),
@@ -121,10 +134,10 @@ class _ProblemState extends State<Problem> {
             alignment: AlignmentDirectional.centerStart,
             children: <Widget>[
               new Opacity(
-                  opacity: widget._taskData.answerShown ? 1.0 : 0.0,
-                  child: new Text(widget._taskData.getAnswer().toString(), style: taskStyle)),
+                  opacity: widget.taskData.answerShown ? 1.0 : 0.0,
+                  child: new Text(widget.taskData.getAnswer().toString(), style: taskStyle)),
               new Opacity(
-                opacity: widget._taskData.answerShown ? 0.0 : 1.0,
+                opacity: widget.taskData.answerShown ? 0.0 : 1.0,
                 child: new TextField(
                   autocorrect: false,
                   keyboardType: TextInputType.number,
@@ -134,7 +147,7 @@ class _ProblemState extends State<Problem> {
                   controller: _inputController,
                   onChanged: (s) {
                     _resetInfo();
-                    widget._taskData.userInput = s;
+                    widget.taskData.userInput = s;
                   },
                 ),
               ),
@@ -156,7 +169,7 @@ class _ProblemState extends State<Problem> {
 //  }
 
   Widget _buildUserInfo(TextStyle style) {
-    switch (widget._taskData.status) {
+    switch (widget.taskData.status) {
       case TaskStatus.CLEAN:
       case TaskStatus.SHOWED_ANSWER:
         return new Text(' ');

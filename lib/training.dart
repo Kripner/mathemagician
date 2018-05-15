@@ -53,9 +53,8 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
         _checkSettingsTooltip();
         print('problem ${widget.settings.problemsSeen.val}\n');
       }
-
     });
-    _progressAnimation.addListener(() => setState((){}));
+    _progressAnimation.addListener(() => setState(() {}));
   }
 
   void handleSolved(int index) {
@@ -164,16 +163,22 @@ class _TrainingState extends State<Training> with TickerProviderStateMixin {
 
   Widget _buildProgressMeter() {
     return new Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      padding: const EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 0.0),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           new Flexible(
-            child: new Container(
-              height: 8.0,
-              child: new LinearProgressIndicator(
-                value: _progressAnimation.value,
-              ),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Container(
+                  height: 8.0,
+                  child: new LinearProgressIndicator(
+                    value: _progressAnimation.value,
+                  ),
+                ),
+
+              ],
             ),
           ),
           new Padding(
